@@ -9,9 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services
-//    .AddOrderService()
-//    .AddSingleton<OrderEndpoints>();
+builder.Services
+    .AddOrderService()
+    .AddSingleton<OrderEndpoints>();
 
 var app = builder.Build();
 
@@ -29,7 +29,7 @@ app.MapGet("/order/$id", (string id) =>
 );
 
 app.MapPost("/order", () => 
-    new Key[] { app.Services.GetRequiredService<OrderEndpoints>().CreateOrder() }
+    new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().CreateOrder() }
 );
 
 app.Run();

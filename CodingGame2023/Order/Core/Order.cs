@@ -6,7 +6,7 @@ namespace Order.Core
     {
         public IEnumerable<IProduct> Basket { get; } = new List<IProduct>();
 
-        public Key Id { get; protected set; } = null!;
+        public Key Id { get; protected set; } = new();
 
         public abstract void AddProduct(IProduct product, int quantity);
 

@@ -6,7 +6,7 @@ using Order.Service.Event;
 
 namespace Order.Service
 {
-    public class OrderCommandHandler : IService<IOrder>
+    public class OrderCommandHandler : ICommandHandler<IOrder>
     {
         private readonly IOrderAggregate _aggregate;
 
@@ -17,7 +17,7 @@ namespace Order.Service
 
         public OperationResult<Key> Handle(ICommand command)
         {
-            var result = command switch
+            OperationResult<Key> result = command switch
             {
                 CreateOrderCommand x => _aggregate.Apply(Handle(x).Value),
                 _ => OperationResult<Key>.CreateFailure("Invalid command")
