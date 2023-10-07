@@ -21,7 +21,7 @@ namespace Order.Service.Aggregates
             if (Instance == null)
             {
                 Instance = new ActiveOrder();
-                _eventStore.Store(Instance.Id, orderCreatedEvent);
+                _eventStore.Store(orderCreatedEvent);
                 return OperationResult<Key>.CreateSuccess(Instance.Id);
             }
             else

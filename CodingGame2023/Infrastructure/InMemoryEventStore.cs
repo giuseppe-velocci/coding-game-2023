@@ -8,6 +8,18 @@ namespace Infrastructure
         private readonly ConcurrentDictionary<Key, List<IEvent>> _store = new();
         private readonly string _aggregateName = typeof(TAggregate).Name;
 
+        public IReadOnlyCollection<IEvent> GetEvents(Key id)
+        {
+            if (id is not null &&_store.TryGetValue(id, out var events))
+            {
+                return events;
+            }
+            else
+            {
+                return  Array.Empty<IEvent>().ToList();
+            }
+        }
+
         public OperationResult<None> Store(IEvent newEvent)
         {
             var aggregateKey = newEvent.Id;
@@ -41,7 +53,6 @@ namespace Infrastructure
                     return OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1");
                 }
             }
-            
         }
     }
 }
