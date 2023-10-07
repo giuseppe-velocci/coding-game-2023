@@ -1,4 +1,5 @@
 ﻿using Core;
+using Order.Core.Drinks;
 using Order.Core.Interfaces;
 using Order.Service.Commands;
 
@@ -16,6 +17,17 @@ namespace Order.Api
         public Key GetOrder(Key id)
         {
             return id;
+        }
+
+        public IEnumerable<IProduct> GetDrinks()
+        {
+            return new IProduct[]
+            {
+                new AmericanCoffee(0),
+                new ItalianCoffee(0),
+                new Tea(0),
+                new Chocolate(0)
+            };
         }
 
         public OperationResult<Key> CreateOrder()

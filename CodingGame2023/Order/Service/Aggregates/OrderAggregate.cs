@@ -1,5 +1,4 @@
 ﻿using Core;
-using Order.Core;
 using Order.Core.Interfaces;
 using Order.Service.Events;
 
@@ -20,7 +19,7 @@ namespace Order.Service.Aggregates
         {
             if (Instance == null)
             {
-                Instance = new ActiveOrder();
+                Instance = new Core.Order.Order(orderCreatedEvent.Id);
                 _eventStore.Store(orderCreatedEvent);
                 return OperationResult<Key>.CreateSuccess(Instance.Id);
             }

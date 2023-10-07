@@ -28,14 +28,9 @@ namespace Order.Service
 
         private OperationResult<OrderCreatedEvent> Handle(CreateOrderCommand command)
         {
-            if (command == null)
-            {
-                return OperationResult<OrderCreatedEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null");
-            }
-            else
-            {
-                return OperationResult<OrderCreatedEvent>.CreateSuccess(new());
-            }
+            return command == null ?
+                OperationResult<OrderCreatedEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null") :
+                OperationResult<OrderCreatedEvent>.CreateSuccess(new());
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Order.Service.DependencyInjection
         {
             services
                 .AddTransient<IOrderAggregate, OrderAggregate>()
-                .AddTransient<IEventStore<IOrder>, InMemoryEventStore<IOrder>>()
+                .AddSingleton<IEventStore<IOrder>, InMemoryEventStore<IOrder>>()
                 .AddTransient<ICommandHandler<IOrder>, OrderCommandHandler>();
             return services;
         }

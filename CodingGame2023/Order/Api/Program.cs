@@ -28,6 +28,10 @@ app.MapGet("/order/$id", (string id) =>
     new Key[] { app.Services.GetRequiredService<OrderEndpoints>().GetOrder(new Key(id)) }
 );
 
+app.MapGet("/drinks", () => 
+    app.Services.GetRequiredService<OrderEndpoints>().GetDrinks()
+);
+
 app.MapPost("/order", () => 
     new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().CreateOrder() }
 );
