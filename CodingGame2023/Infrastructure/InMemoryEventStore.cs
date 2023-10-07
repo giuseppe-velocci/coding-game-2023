@@ -8,13 +8,14 @@ namespace Infrastructure
         private readonly ConcurrentDictionary<Key, List<IEvent>> _store = new();
         private readonly string _aggregateName = typeof(TAggregate).Name;
 
-        public OperationResult<None> Store(Key aggregateKey, IEvent currentEvent)
+        public OperationResult<None> Store(IEvent newEvent)
         {
+            var aggregateKey = newEvent.Id;
             if (_store.TryGetValue(aggregateKey, out var record))
             {
-                if (record.Count == currentEvent.Version)
+                if (record.Count +1 == newEvent.Version)
                 {
-                    record.Add(currentEvent);
+                    record.Add(newEvent);
                     return OperationResult<None>.CreateSuccess();
                 }
                 else
@@ -24,13 +25,9 @@ namespace Infrastructure
             }
             else
             {
-                if (currentEvent.Version != 1) 
+                if (newEvent.Version == 1) 
                 {
-                    return OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1");
-                }
-                else
-                {
-                    if (_store.TryAdd(aggregateKey, new List<IEvent> { currentEvent }))
+                    if (_store.TryAdd(aggregateKey, new List<IEvent> { newEvent }))
                     {
                         return OperationResult<None>.CreateSuccess();
                     }
@@ -38,6 +35,10 @@ namespace Infrastructure
                     {
                         return OperationResult<None>.CreateFailure($"Cannot store a new aggregate for of {_aggregateName} at {aggregateKey} because it is already stored");
                     }
+                }
+                else
+                {
+                    return OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1");
                 }
             }
             
