@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core
+﻿namespace Core
 {
     public class Key
     {
@@ -8,6 +6,11 @@ namespace Core
         public Key()
         {
              Value = Guid.NewGuid().ToString();
+        }
+        
+        public Key(string value)
+        {
+             Value = value;
         }
     }
 }

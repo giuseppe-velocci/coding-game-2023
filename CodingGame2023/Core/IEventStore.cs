@@ -4,6 +4,6 @@ namespace Core
 {
     public interface IEventStore<in TAggregate> where TAggregate : class
     {
-        public Task StoreAsync(IEvent currentEvent);
+        public OperationResult<None> Store(Key aggregateKey, IEvent currentEvent);
     }
 }

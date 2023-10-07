@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Core
+﻿namespace Core
 {
     public interface IEvent
     {
-        string Name { get; }
-        Key Id { get; }
+        public string Name { get; }
+        public Key Id { get; }
+        public int Version { get; }
     }
 }
