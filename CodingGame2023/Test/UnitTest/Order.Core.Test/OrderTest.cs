@@ -1,6 +1,4 @@
 using Core;
-using Moq;
-using Order.Core.Interfaces;
 using Test.Commons;
 
 namespace Order.Core.Test
@@ -8,13 +6,13 @@ namespace Order.Core.Test
     public class OrderTest
     {
         private static readonly Key _id = new();
-        private Order.Order _sut = new(_id);
+        private readonly Order.Order _sut = new(_id);
 
         [Fact]
         public void AddProduct_WhenValidProductIsAddedToBasket_Succeeds()
         {
             int quantity = 1;
-            SampleProduct product = new() { Quantity = quantity};
+            SampleProduct product = new() { Quantity = quantity };
             _sut.AddProduct(product, quantity);
 
             Assert.Equivalent(product, _sut.GetProducts().Single());
@@ -35,7 +33,7 @@ namespace Order.Core.Test
             var result = _sut.GetTotalCost();
             Assert.Equal(0, result);
         }
-        
+
         [Fact]
         public void GetTotalCost_WhenBasketHasProducts_RetunsAmount()
         {
@@ -57,7 +55,7 @@ namespace Order.Core.Test
         [Fact]
         public void PayWithCash_ShouldThrowNotImplementedException()
         {
-            
+
             Assert.Throws<NotImplementedException>(() => _sut.PayWithCash());
         }
     }

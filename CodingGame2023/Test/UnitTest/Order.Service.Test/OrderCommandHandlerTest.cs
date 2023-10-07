@@ -3,6 +3,7 @@ using Moq;
 using Order.Service.Aggregates;
 using Order.Service.Commands;
 using Order.Service.Events;
+using Order.Service.Handlers;
 using Test.Commons;
 
 namespace Order.Service.Test

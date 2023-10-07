@@ -1,6 +1,5 @@
 using Core;
 using Test.Commons;
-using Xunit;
 
 namespace Infrastructure.Test
 {
@@ -10,7 +9,7 @@ namespace Infrastructure.Test
 
         public InMemoryEventStoreTest()
         {
-            _sut = new ();
+            _sut = new();
         }
 
         [Fact]
@@ -19,7 +18,7 @@ namespace Infrastructure.Test
             var result = _sut.Store(new GenericEvent(1));
             Assert.True(result.Success);
         }
-        
+
         [Fact]
         public void Store_WhenEventIsNewAndVersionIsNotOne_Fails()
         {
@@ -54,7 +53,7 @@ namespace Infrastructure.Test
             var result = _sut.GetEvents(id);
             Assert.Equal(2, result.Count);
         }
-        
+
         [Fact]
         public void GetEvents_WhenEventIdIsNull_ReturnsList()
         {

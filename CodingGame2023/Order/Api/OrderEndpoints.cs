@@ -1,4 +1,5 @@
 ﻿using Core;
+using Order.Api.Models;
 using Order.Core.Drinks;
 using Order.Core.Interfaces;
 using Order.Service.Commands;
@@ -19,20 +20,26 @@ namespace Order.Api
             return id;
         }
 
-        public IEnumerable<IProduct> GetDrinks()
-        {
-            return new IProduct[]
-            {
-                new AmericanCoffee(0),
-                new ItalianCoffee(0),
-                new Tea(0),
-                new Chocolate(0)
-            };
-        }
 
         public OperationResult<Key> CreateOrder()
         {
             return _service.Handle(new CreateOrderCommand());
+        }
+
+        public OperationResult<Key> AddToBasket(string order, ProductRequest product)
+        {
+            return _service.Handle(new AddProductToBasketCommand(new Key(order), product.Name, product.Quantity));
+        }
+
+        public IEnumerable<IProduct> GetDrinks()
+        {
+            return new IProduct[]
+            {
+                new AmericanCoffee(),
+                new ItalianCoffee(),
+                new Tea(),
+                new Chocolate()
+            };
         }
     }
 }

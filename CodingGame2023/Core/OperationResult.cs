@@ -1,8 +1,8 @@
 ﻿namespace Core
 {
-    public sealed record class OperationResult<T>  where T : class
+    public sealed record class OperationResult<T>
     {
-        public T Value { get; private init; } = null!;
+        public T Value { get; private init; } = default!;
         public bool Success { get; private init; } = false;
         public string Message { get; private init; } = string.Empty;
 

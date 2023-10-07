@@ -6,6 +6,7 @@ namespace Order.Service.Aggregates
 {
     public interface IOrderAggregate : IAggregate<IOrder>
     {
-        OperationResult<Key> Apply(OrderCreatedEvent orderCreatedEvent);
+        OperationResult<Key> Apply(OrderCreatedEvent newEvent);
+        OperationResult<Key> Apply(ProductAddedToBaketEvent newEvent);
     }
 }

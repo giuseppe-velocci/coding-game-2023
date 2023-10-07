@@ -10,13 +10,13 @@ namespace Infrastructure
 
         public IReadOnlyCollection<IEvent> GetEvents(Key id)
         {
-            if (id is not null &&_store.TryGetValue(id, out var events))
+            if (id is not null && _store.TryGetValue(id, out var events))
             {
                 return events;
             }
             else
             {
-                return  Array.Empty<IEvent>().ToList();
+                return Array.Empty<IEvent>().ToList();
             }
         }
 
@@ -25,7 +25,7 @@ namespace Infrastructure
             var aggregateKey = newEvent.Id;
             if (_store.TryGetValue(aggregateKey, out var record))
             {
-                if (record.Count +1 == newEvent.Version)
+                if (record.Count + 1 == newEvent.Version)
                 {
                     record.Add(newEvent);
                     return OperationResult<None>.CreateSuccess();
@@ -37,7 +37,7 @@ namespace Infrastructure
             }
             else
             {
-                if (newEvent.Version == 1) 
+                if (newEvent.Version == 1)
                 {
                     if (_store.TryAdd(aggregateKey, new List<IEvent> { newEvent }))
                     {
