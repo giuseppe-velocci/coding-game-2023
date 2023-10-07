@@ -1,6 +1,6 @@
 ﻿using Core;
-using Order.Core;
-using Order.Service.Command;
+using Order.Core.Interfaces;
+using Order.Service.Commands;
 
 namespace Order.Api
 {

@@ -1,8 +1,8 @@
 ﻿using Core;
 using Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using Order.Core;
-using Order.Service.Aggregate;
+using Order.Core.Interfaces;
+using Order.Service.Aggregates;
 
 namespace Order.Service.DependencyInjection
 {

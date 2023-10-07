@@ -1,9 +1,9 @@
 ﻿using Core;
 using Order.Core;
-using Order.Service.Aggregate;
-using Order.Service.Event;
+using Order.Core.Interfaces;
+using Order.Service.Events;
 
-namespace Order.Service.Aggregate
+namespace Order.Service.Aggregates
 {
     internal sealed class OrderAggregate : IOrderAggregate
     {
@@ -21,6 +21,7 @@ namespace Order.Service.Aggregate
             if (Instance == null)
             {
                 Instance = new ActiveOrder();
+                _eventStore.Store(Instance.Id, orderCreatedEvent);
                 return OperationResult<Key>.CreateSuccess(Instance.Id);
             }
             else

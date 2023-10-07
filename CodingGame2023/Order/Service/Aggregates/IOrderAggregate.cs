@@ -1,8 +1,8 @@
 ﻿using Core;
-using Order.Core;
-using Order.Service.Event;
+using Order.Core.Interfaces;
+using Order.Service.Events;
 
-namespace Order.Service.Aggregate
+namespace Order.Service.Aggregates
 {
     public interface IOrderAggregate : IAggregate<IOrder>
     {

@@ -1,8 +1,8 @@
 ﻿using Core;
-using Order.Core;
-using Order.Service.Aggregate;
-using Order.Service.Command;
-using Order.Service.Event;
+using Order.Core.Interfaces;
+using Order.Service.Aggregates;
+using Order.Service.Commands;
+using Order.Service.Events;
 
 namespace Order.Service
 {

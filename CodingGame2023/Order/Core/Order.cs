@@ -1,4 +1,5 @@
 ﻿using Core;
+using Order.Core.Interfaces;
 
 namespace Order.Core
 {

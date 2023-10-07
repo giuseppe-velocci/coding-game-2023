@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace Order.Service.Command
+namespace Order.Service.Commands
 {
     public class CreateOrderCommand : ICommand
     {

@@ -1,6 +1,6 @@
 ﻿using Core;
 
-namespace Order.Core
+namespace Order.Core.Interfaces
 {
     public interface IOrder
     {
