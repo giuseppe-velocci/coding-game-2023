@@ -2,8 +2,6 @@ using Core;
 using Order.Api;
 using Order.Api.Models;
 using Order.Service.DependencyInjection;
-using System;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,32 +34,21 @@ app.MapGet("/drinks", () =>
 );
 
 app.MapPost("/order", () =>
-    new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().CreateOrder() }
+{
+    var result = app.Services.GetRequiredService<OrderEndpoints>().CreateOrder();
+    return result.Success ? Results.Ok(result) : Results.BadRequest(result);
+}
 );
-
-//app.MapPost("/add-product-to-basket/{order}", async (string order, HttpRequest request) =>
-//{
-//    string body = "";
-//    using (StreamReader stream = new StreamReader(request.Body))
-//    {
-//        body = await stream.ReadToEndAsync();
-//    }
-//    ProductRequest? product = JsonSerializer.Deserialize<ProductRequest>(body);
-
-//    if (product == null)
-//    {
-//        return Results.BadRequest("Invalid body");
-//    }
-//    return Results.Ok(new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product) });
-//});
 
 app.MapPost("/add-product-to-basket/{order}", (string order, ProductRequest product) =>
 {
-    if (product == null)
+    if (product is null)
     {
         return Results.BadRequest("Invalid body");
     }
-    return Results.Ok(new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product) });
+
+    var result = app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product);
+    return result.Success? Results.Ok(result) : Results.BadRequest(result);
 });
 
 app.Run();

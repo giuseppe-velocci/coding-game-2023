@@ -24,8 +24,15 @@ namespace Order.Service.Aggregates
 
         private OperationResult<Key> Apply(ProductAddedToBasketEvent newEvent)
         {
-            Instance.AddProduct(newEvent.Product, newEvent.Quantity);
-            return OperationResult<Key>.CreateSuccess(newEvent.Id);
+            if (Instance is null)
+            {
+                return OperationResult<Key>.CreateFailure("Order does not exists");
+            }
+            else
+            {
+                Instance.AddProduct(newEvent.Product, newEvent.Quantity);
+                return OperationResult<Key>.CreateSuccess(newEvent.Id);
+            }
         }
 
         protected override OperationResult<Key> ApplyChange(IEvent storedEvent)
