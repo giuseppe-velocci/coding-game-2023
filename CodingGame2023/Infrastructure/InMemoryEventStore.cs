@@ -25,7 +25,7 @@ namespace Infrastructure
             var aggregateKey = newEvent.Id;
             if (_store.TryGetValue(aggregateKey, out var record))
             {
-                if (record.Count + 1 == newEvent.Version)
+                if (record.Count == newEvent.Version)
                 {
                     record.Add(newEvent);
                     return OperationResult<None>.CreateSuccess();

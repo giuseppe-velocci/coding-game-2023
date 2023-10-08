@@ -11,15 +11,14 @@ namespace Order.Service.Stores
         {
             _aggregate = aggregate;
         }
-        public OperationResult<IOrder> GetOrder(Key id)
+
+        OperationResult<Core.Order.Order> IOrderStore.GetOrder(Key id)
         {
             IOrder? result = _aggregate.GetInstance(id);
 
             return result is null ?
-                OperationResult<IOrder>.CreateFailure("Order not found for provided key") :
-                OperationResult<IOrder>.CreateSuccess(result);
-
+                OperationResult<Core.Order.Order>.CreateFailure("Order not found for provided key") :
+                OperationResult<Core.Order.Order>.CreateSuccess((Core.Order.Order)result);
         }
-
     }
 }

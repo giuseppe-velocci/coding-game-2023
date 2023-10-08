@@ -18,7 +18,7 @@ namespace Order.Api
             _orderStore = orderStore;
         }
 
-        public OperationResult<IOrder> GetOrder(Key id)
+        public OperationResult<Core.Order.Order> GetOrder(Key id)
         {
             return _orderStore.GetOrder(id);
         }

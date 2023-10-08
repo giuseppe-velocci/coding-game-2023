@@ -26,10 +26,11 @@
             var newVersionResult = ApplyAllChanges(newEvent.Id);
             if (newVersionResult.Success)
             {
-                var result = ApplyChange(newEvent.UpdateVersion(newVersionResult.Value));
+                var versionedEvent = newEvent.UpdateVersion(newVersionResult.Value);
+                var result = ApplyChange(versionedEvent);
                 if (result.Success)
                 {
-                    _eventStore.Store(newEvent);
+                    _eventStore.Store(versionedEvent);
                 }
                 return result;
             }

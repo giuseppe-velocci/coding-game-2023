@@ -5,9 +5,9 @@ namespace Order.Core.Order
 {
     public abstract class AbstractOrder : IOrder
     {
-        protected List<IProduct> Basket { get; } = new List<IProduct>();
+        public List<IProduct> Basket { get; } = new List<IProduct>();
         public Key Id { get; protected set; } = new();
-        protected IPayment? Payment { get; set; } = null!;
+        public IPayment? Payment { get; protected set; } = null!;
 
         public IEnumerable<IProduct> GetProducts() => Basket.ToArray();
         public IPayment? GetPayment() => Payment;
