@@ -18,36 +18,38 @@ namespace Order.Service.Handlers
 
         public OperationResult<Key> Handle(ICommand command)
         {
-            OperationResult<Key> result = command switch
+            var eventfromCommand = command switch
             {
-                CreateOrderCommand x => _aggregate.Apply(Handle(x).Value),
-                AddProductToBasketCommand x => _aggregate.Apply(Handle(x).Value),
-                _ => OperationResult<Key>.CreateFailure("Invalid command")
+                CreateOrderCommand x => Handle(x),
+                AddProductToBasketCommand x => Handle(x),
+                _ => OperationResult<IEvent>.CreateFailure("Invalid command")
             };
 
-            return result;
+            return eventfromCommand.Success ?
+                _aggregate.Apply(eventfromCommand.Value) :
+                OperationResult<Key>.CreateFailure(eventfromCommand.Message);
         }
 
-        private OperationResult<OrderCreatedEvent> Handle(CreateOrderCommand command)
+        private OperationResult<IEvent> Handle(CreateOrderCommand command)
         {
             return command == null ?
-                OperationResult<OrderCreatedEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null") :
-                OperationResult<OrderCreatedEvent>.CreateSuccess(new());
+                OperationResult<IEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null") :
+                OperationResult<IEvent>.CreateSuccess(new OrderCreatedEvent());
         }
 
-        private OperationResult<ProductAddedToBasketEvent> Handle(AddProductToBasketCommand command)
+        private OperationResult<IEvent> Handle(AddProductToBasketCommand command)
         {
             if (command.Quantity > 0)
             {
                 var productSearch = _productStore.Find(command.ProductName);
 
                 return productSearch.Success ?
-                    OperationResult<ProductAddedToBasketEvent>.CreateSuccess(new ProductAddedToBasketEvent(command.Id, productSearch.Value, command.Quantity)) :
-                    OperationResult<ProductAddedToBasketEvent>.CreateFailure("Product not found");
+                    OperationResult<IEvent>.CreateSuccess(new ProductAddedToBasketEvent(command.Id, productSearch.Value, command.Quantity)) :
+                    OperationResult<IEvent>.CreateFailure("Product not found");
             }
             else
             {
-                return OperationResult<ProductAddedToBasketEvent>.CreateFailure("Invalid quantity");
+                return OperationResult<IEvent>.CreateFailure("Invalid quantity");
             }
         }
     }
