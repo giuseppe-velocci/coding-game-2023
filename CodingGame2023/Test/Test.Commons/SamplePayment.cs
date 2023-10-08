@@ -3,9 +3,9 @@ using Order.Core.Interfaces;
 
 namespace Test.Commons
 {
-    public class GenericPayment : IPayment
+    public class SamplePayment : IPayment
     {
-        public GenericPayment(Key orderId)
+        public SamplePayment(Key orderId)
         {
             OrderId = orderId;
         }
@@ -17,6 +17,6 @@ namespace Test.Commons
 
         public bool IsAllowed(double amount) => true;
 
-        public IPayment UpdateOrderId(Key orderId) => new GenericPayment(orderId);
+        public IPayment UpdateOrderId(Key orderId) => new SamplePayment(orderId);
     }
 }

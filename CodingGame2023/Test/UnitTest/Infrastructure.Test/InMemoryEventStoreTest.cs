@@ -15,14 +15,14 @@ namespace Infrastructure.Test
         [Fact]
         public void Store_WhenEventIsNewAndVersionIsOne_Success()
         {
-            var result = _sut.Store(new GenericEvent(0));
+            var result = _sut.Store(new SampleEvent(0));
             Assert.True(result.Success);
         }
 
         [Fact]
         public void Store_WhenEventIsNewAndVersionIsNotOne_Failure()
         {
-            var result = _sut.Store(new GenericEvent(2));
+            var result = _sut.Store(new SampleEvent(2));
             Assert.False(result.Success);
         }
 
@@ -32,8 +32,8 @@ namespace Infrastructure.Test
         public void Store_WhenEventIsFoundAndVersionDoesNotMatch_Failure(int version)
         {
             Key id = new();
-            var _ = _sut.Store(new GenericEvent(id, 0));
-            var result = _sut.Store(new GenericEvent(id, version));
+            var _ = _sut.Store(new SampleEvent(id, 0));
+            var result = _sut.Store(new SampleEvent(id, version));
             Assert.Single(_sut.GetEvents(id));
             Assert.False(result.Success);
         }
@@ -42,8 +42,8 @@ namespace Infrastructure.Test
         public void Store_WhenEventIsFoundAndVersionDoMatch_Success()
         {
             Key id = new();
-            var _ = _sut.Store(new GenericEvent(id, 0));
-            var result = _sut.Store(new GenericEvent(id, 1));
+            var _ = _sut.Store(new SampleEvent(id, 0));
+            var result = _sut.Store(new SampleEvent(id, 1));
             Assert.True(result.Success);
         }
 
@@ -51,8 +51,8 @@ namespace Infrastructure.Test
         public void GetEvents_WhenEventIsFound_ReturnsList()
         {
             Key id = new();
-            var _ = _sut.Store(new GenericEvent(id, 0));
-            var __ = _sut.Store(new GenericEvent(id, 1));
+            var _ = _sut.Store(new SampleEvent(id, 0));
+            var __ = _sut.Store(new SampleEvent(id, 1));
             var result = _sut.GetEvents(id);
             Assert.Equal(2, result.Count);
         }
@@ -61,8 +61,8 @@ namespace Infrastructure.Test
         public void GetEvents_WhenEventIdIsNullEvenIfEventsReStored_ReturnsList()
         {
             Key id = new();
-            var _ = _sut.Store(new GenericEvent(id, 0));
-            var __ = _sut.Store(new GenericEvent(id, 1));
+            var _ = _sut.Store(new SampleEvent(id, 0));
+            var __ = _sut.Store(new SampleEvent(id, 1));
             var result = _sut.GetEvents(null!);
             Assert.Empty(result);
         }

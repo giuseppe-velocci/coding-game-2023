@@ -12,7 +12,7 @@ namespace Order.Service.Stores
             new CashPayment(),
         };
 
-        public OperationResult<IPayment> GetPayment(string name)
+        public OperationResult<IPayment> Find(string name)
         {
             var payment = _payments.FirstOrDefault(x => name == x.GetType().Name);
 

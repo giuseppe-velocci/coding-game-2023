@@ -21,16 +21,12 @@ namespace Order.Service.Test
         }
 
         [Fact]
-        public void Handle_WhenCommandIsUnhandled_Failure()
-        {
-            var result = _sut.Handle(new UnhandledCommand());
-            Assert.False(result.Success);
-        }
-
-        [Fact]
         public void Handle_WhenCreateOrderCommandAndAggregateApplySucceeds_Success()
         {
-            _mockAggregate.Setup(x => x.Apply(It.IsAny<OrderCreatedEvent>())).Returns(OperationResult<Key>.CreateSuccess(new Key()));
+            //Arrange
+            _mockAggregate.Setup(x => x.Apply(It.IsAny<IEvent>())).Returns(OperationResult<Key>.CreateSuccess(new Key()));
+
+            //Act
             var result = _sut.Handle(new CreateOrderCommand());
             Assert.True(result.Success);
         }
@@ -38,8 +34,104 @@ namespace Order.Service.Test
         [Fact]
         public void Handle_WhenCreateOrderCommandAndAggregateApplyFails_Failure()
         {
-            _mockAggregate.Setup(x => x.Apply(It.IsAny<OrderCreatedEvent>())).Returns(OperationResult<Key>.CreateFailure(""));
+            //Arrange
+            _mockAggregate.Setup(x => x.Apply(It.IsAny<IEvent>())).Returns(OperationResult<Key>.CreateFailure(""));
+
+            //Act
             var result = _sut.Handle(new CreateOrderCommand());
+
+            //Assert
+            Assert.False(result.Success);
+        }
+
+        [Fact]
+        public void Handle_WhenAddProductToBasketCommandAndAggregateApplyFails_Failure()
+        {
+            //Arrange
+            _mockProductStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IProduct>.CreateSuccess(new SampleProduct()));
+            _mockAggregate.Setup(x => x.Apply(It.IsAny<IEvent>())).Returns(OperationResult<Key>.CreateFailure(""));
+
+            //Act
+            var result = _sut.Handle(new AddProductToBasketCommand(new Key(), "prod", 1));
+
+            //Assert
+            Assert.False(result.Success);
+        }
+
+        [Fact]
+        public void Handle_WhenAddProductToBasketCommandAndQuantityLowerThanOne_Failure()
+        {
+            //Arrange
+            _mockProductStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IProduct>.CreateSuccess(new SampleProduct()));
+
+            //Act
+            var result = _sut.Handle(new AddProductToBasketCommand(new Key(), "prod", 0));
+
+            //Assert
+            Assert.False(result.Success);
+        }
+        
+        [Fact]
+        public void Handle_WhenAddProductToBasketCommandAndProductIsNotFound_Failure()
+        {
+            //Arrange
+            _mockProductStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IProduct>.CreateFailure(""));
+            
+            //Act
+            var result = _sut.Handle(new AddProductToBasketCommand(new Key(), "prod", 0));
+
+            //Assert
+            Assert.False(result.Success);
+        }
+        
+        [Fact]
+        public void Handle_WhenAddPaymentCommandAndAggregateApplyFails_Fails()
+        {
+            //Arrange
+            _mockPaymentStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IPayment>.CreateSuccess(new SamplePayment(new Key())));
+            _mockAggregate.Setup(x => x.Apply(It.IsAny<IEvent>())).Returns(OperationResult<Key>.CreateFailure(""));
+
+            //Act
+            var result = _sut.Handle(new AddPaymentCommand(new Key(), "payment"));
+
+            //Assert
+            Assert.False(result.Success);
+        }
+        
+        [Fact]
+        public void Handle_WhenAddPaymentCommandAndPaymentFound_Success()
+        {
+            //Arrange
+            _mockPaymentStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IPayment>.CreateSuccess(new SamplePayment(new Key())));
+            _mockAggregate.Setup(x => x.Apply(It.IsAny<IEvent>())).Returns(OperationResult<Key>.CreateSuccess(new Key()));
+
+            //Act
+            var result = _sut.Handle(new AddPaymentCommand(new Key(), "payment"));
+
+            //Assert
+            Assert.True(result.Success);
+        }
+        
+        [Fact]
+        public void Handle_WhenAddPaymentCommandAndPaymentIsNotFound_Failure()
+        {
+            //Arrange
+            _mockPaymentStore.Setup(x => x.Find(It.IsAny<string>())).Returns(OperationResult<IPayment>.CreateFailure(""));
+
+            //Act
+            var result = _sut.Handle(new AddPaymentCommand(new Key(), "payment"));
+
+            //Assert
+            Assert.False(result.Success);
+        }
+
+        [Fact]
+        public void Handle_WhenCommandIsUnhandled_Failure()
+        {
+            //Act
+            var result = _sut.Handle(new UnhandledCommand());
+
+            //Assert
             Assert.False(result.Success);
         }
     }

@@ -4,7 +4,7 @@ namespace Order.Core.Interfaces
 {
     public interface IPaymentStore
     {
-        OperationResult<IPayment> GetPayment(string name);
+        OperationResult<IPayment> Find(string name);
         IEnumerable<string> GetPayments();
     }
 }

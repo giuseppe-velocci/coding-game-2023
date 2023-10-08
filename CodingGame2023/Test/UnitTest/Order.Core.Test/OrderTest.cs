@@ -49,7 +49,7 @@ namespace Order.Core.Test
         [Fact]
         public void AddPayment_WhenNoPaymentIsSet_Success()
         {
-            var payment = new GenericPayment(new Key());
+            var payment = new SamplePayment(new Key());
             _sut.AddPayment(payment);
 
             Assert.Equal(payment, _sut.GetPayment());
@@ -58,8 +58,8 @@ namespace Order.Core.Test
         [Fact]
         public void AddPayment_WhenPaymentIsSet_OverridesAndSuccess()
         {
-            _sut.AddPayment(new GenericPayment(new Key()));
-            var payment = new GenericPayment(new Key());
+            _sut.AddPayment(new SamplePayment(new Key()));
+            var payment = new SamplePayment(new Key());
             _sut.AddPayment(payment);
 
             Assert.Equal(payment, _sut.GetPayment());

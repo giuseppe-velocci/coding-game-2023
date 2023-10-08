@@ -2,20 +2,20 @@
 
 namespace Test.Commons
 {
-    public class GenericEvent : IEvent
+    public class SampleEvent : IEvent
     {
-        public string Name => nameof(GenericEvent);
+        public string Name => nameof(SampleEvent);
 
         public Key Id { get; } = new();
 
         public int Version { get; }
 
-        public GenericEvent(int version)
+        public SampleEvent(int version)
         {
             Version = version;
         }
 
-        public GenericEvent(Key id, int version)
+        public SampleEvent(Key id, int version)
         {
             Id = id;
             Version = version;
@@ -23,7 +23,7 @@ namespace Test.Commons
 
         public IEvent UpdateVersion(int version)
         {
-            return new GenericEvent(Id, version);
+            return new SampleEvent(Id, version);
         }
     }
 }

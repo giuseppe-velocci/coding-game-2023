@@ -58,7 +58,7 @@ namespace Order.Service.CommandHandlers
 
         private OperationResult<IEvent> Handle(AddPaymentCommand command)
         {
-            var payment = _paymentStore.GetPayment(command.Payment);
+            var payment = _paymentStore.Find(command.Payment);
 
             return payment.Success ?
                 OperationResult<IEvent>.CreateSuccess(new PaymentAddedEvent(command.Id, payment.Value.UpdateOrderId(command.Id))) :
