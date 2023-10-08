@@ -1,6 +1,5 @@
 ﻿using Core;
 using Order.Api.Models;
-using Order.Core.Drinks;
 using Order.Core.Interfaces;
 using Order.Service.Commands;
 
@@ -9,10 +8,12 @@ namespace Order.Api
     public class OrderEndpoints
     {
         private readonly ICommandHandler<IOrder> _service;
+        private readonly IProductStore _productStore;
 
-        public OrderEndpoints(ICommandHandler<IOrder> service)
+        public OrderEndpoints(ICommandHandler<IOrder> service, IProductStore productStore)
         {
             _service = service;
+            _productStore = productStore;
         }
 
         public Key GetOrder(Key id)
@@ -33,13 +34,7 @@ namespace Order.Api
 
         public IEnumerable<IProduct> GetDrinks()
         {
-            return new IProduct[]
-            {
-                new AmericanCoffee(),
-                new ItalianCoffee(),
-                new Tea(),
-                new Chocolate()
-            };
+            return _productStore.GetProducts();
         }
     }
 }

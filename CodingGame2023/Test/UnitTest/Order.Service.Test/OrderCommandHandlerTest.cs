@@ -1,5 +1,6 @@
 using Core;
 using Moq;
+using Order.Core.Interfaces;
 using Order.Service.Aggregates;
 using Order.Service.Commands;
 using Order.Service.Events;
@@ -11,23 +12,23 @@ namespace Order.Service.Test
     public class OrderCommandHandlerTest
     {
         private readonly OrderCommandHandler _sut;
-        private readonly Mock<IOrderAggregate> _mockAggregate;
+        private readonly Mock<IAggregate<IOrder>> _mockAggregate = new();
+        private readonly Mock<IProductStore> _mockStore = new();
 
         public OrderCommandHandlerTest()
         {
-            _mockAggregate = new Mock<IOrderAggregate>();
-            _sut = new OrderCommandHandler(_mockAggregate.Object);
+            _sut = new OrderCommandHandler(_mockAggregate.Object, _mockStore.Object);
         }
 
         [Fact]
-        public void Handle_WhenCommandIsUnhandled_Fails()
+        public void Handle_WhenCommandIsUnhandled_Failure()
         {
             var result = _sut.Handle(new UnhandledCommand());
             Assert.False(result.Success);
         }
 
         [Fact]
-        public void Handle_WhenCreateOrderCommandAndAggregateApplySucceeds_Succeeds()
+        public void Handle_WhenCreateOrderCommandAndAggregateApplySucceeds_Success()
         {
             _mockAggregate.Setup(x => x.Apply(It.IsAny<OrderCreatedEvent>())).Returns(OperationResult<Key>.CreateSuccess(new Key()));
             var result = _sut.Handle(new CreateOrderCommand());
@@ -35,7 +36,7 @@ namespace Order.Service.Test
         }
 
         [Fact]
-        public void Handle_WhenCreateOrderCommandAndAggregateApplyFails_Fails()
+        public void Handle_WhenCreateOrderCommandAndAggregateApplyFails_Failure()
         {
             _mockAggregate.Setup(x => x.Apply(It.IsAny<OrderCreatedEvent>())).Returns(OperationResult<Key>.CreateFailure(""));
             var result = _sut.Handle(new CreateOrderCommand());

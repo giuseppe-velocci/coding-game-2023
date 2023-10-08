@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <InternalsVisibleTo Include="Order.Service.Test" />
   </ItemGroup>
 
   <ItemGroup>

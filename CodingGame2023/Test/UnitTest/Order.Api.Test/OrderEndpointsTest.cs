@@ -8,12 +8,12 @@ namespace Order.Api.Test
     public class OrderEndpointsTest
     {
         private readonly OrderEndpoints _sut;
-        private readonly Mock<ICommandHandler<IOrder>> _mockHandler;
+        private readonly Mock<ICommandHandler<IOrder>> _mockHandler = new();
+        private readonly Mock<IProductStore> _mockProductStore = new();
 
         public OrderEndpointsTest()
         {
-            _mockHandler = new();
-            _sut = new OrderEndpoints(_mockHandler.Object);
+            _sut = new OrderEndpoints(_mockHandler.Object, _mockProductStore.Object);
         }
 
         [Fact]

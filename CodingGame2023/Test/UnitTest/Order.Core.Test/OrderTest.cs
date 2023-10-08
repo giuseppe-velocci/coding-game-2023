@@ -9,7 +9,7 @@ namespace Order.Core.Test
         private readonly Order.Order _sut = new(_id);
 
         [Fact]
-        public void AddProduct_WhenValidProductIsAddedToBasket_Succeeds()
+        public void AddProduct_WhenValidProductIsAddedToBasket_Success()
         {
             int quantity = 1;
             SampleProduct product = new() { Quantity = quantity };
@@ -20,7 +20,7 @@ namespace Order.Core.Test
         }
 
         [Fact]
-        public void AddProduct_WhenNull_Fails()
+        public void AddProduct_WhenNull_Failure()
         {
             _sut.AddProduct(null!, 1);
 

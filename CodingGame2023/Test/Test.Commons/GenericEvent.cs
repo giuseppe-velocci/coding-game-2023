@@ -20,5 +20,10 @@ namespace Test.Commons
             Id = id;
             Version = version;
         }
+
+        public IEvent UpdateVersion(int version)
+        {
+            return new GenericEvent(Id, version);
+        }
     }
 }

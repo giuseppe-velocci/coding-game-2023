@@ -8,10 +8,10 @@ namespace Order.Service.Handlers
 {
     public class OrderCommandHandler : ICommandHandler<IOrder>
     {
-        private readonly IOrderAggregate _aggregate;
+        private readonly IAggregate<IOrder> _aggregate;
         private readonly IProductStore _productStore;
 
-        public OrderCommandHandler(IOrderAggregate aggregate, IProductStore productStore)
+        public OrderCommandHandler(IAggregate<IOrder> aggregate, IProductStore productStore)
         {
             _aggregate = aggregate;
             _productStore = productStore;

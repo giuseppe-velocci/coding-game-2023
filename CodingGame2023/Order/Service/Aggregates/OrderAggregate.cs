@@ -4,48 +4,31 @@ using Order.Service.Events;
 
 namespace Order.Service.Aggregates
 {
-    internal sealed class OrderAggregate : IOrderAggregate
+    internal sealed class OrderAggregate : AbstractAggregate<IOrder>
     {
-        public IOrder Instance { get; private set; } = null!;
+        public OrderAggregate(IEventStore<IOrder> eventStore) : base(eventStore)
+        { }
 
-        private readonly IEventStore<IOrder> _eventStore;
-
-        public OrderAggregate(IEventStore<IOrder> eventStore)
+        private OperationResult<Key> Apply(OrderCreatedEvent newEvent)
         {
-            _eventStore = eventStore;
-        }
-
-        public OperationResult<Key> Apply(OrderCreatedEvent newEvent)
-        {
-            if (Instance == null)
+            if (Instance is null)
             {
                 Instance = new Core.Order.Order(newEvent.Id);
-                _eventStore.Store(newEvent);
-                return OperationResult<Key>.CreateSuccess(Instance.Id);
+                return OperationResult<Key>.CreateSuccess(newEvent.Id);
             }
             else
             {
-                return OperationResult<Key>.CreateFailure($"{nameof(OrderCreatedEvent)} must be invoked on a new {nameof(IOrder)} instance");
+                return OperationResult<Key>.CreateFailure("Cannot create a new Order that already exists");
             }
         }
 
-        public OperationResult<Key> Apply(ProductAddedToBaketEvent newEvent)
+        private OperationResult<Key> Apply(ProductAddedToBaketEvent newEvent)
         {
-            var newVersionResult = ApplyAllChanges(newEvent.Id);
-            if (newVersionResult.Success)
-            {
-                Instance.AddProduct(newEvent.Product, newEvent.Quantity);
-                newEvent.UpdateVersion(newVersionResult.Value);
-                _eventStore.Store(newEvent);
-                return OperationResult<Key>.CreateSuccess(Instance.Id);
-            }
-            else
-            {
-                return OperationResult<Key>.CreateFailure("Concurrent update failure");
-            }
+            Instance.AddProduct(newEvent.Product, newEvent.Quantity);
+            return OperationResult<Key>.CreateSuccess(newEvent.Id);
         }
 
-        private OperationResult<Key> ApplyChange(IEvent storedEvent)
+        protected override OperationResult<Key> ApplyChange(IEvent storedEvent)
         {
             OperationResult<Key> result = storedEvent switch
             {
@@ -54,21 +37,6 @@ namespace Order.Service.Aggregates
                 _ => OperationResult<Key>.CreateFailure("Invalid event")
             };
             return result;
-        }
-
-        private OperationResult<int> ApplyAllChanges(Key id)
-        {
-            var events = _eventStore.GetEvents(id);
-            var results = events.Select(x => ApplyChange(x));
-            if (results.Any(x => !x.Success))
-            {
-                return OperationResult<int>.CreateFailure("Invalid events in the chain");
-            }
-            else
-            {
-                int count = events.Count;
-                return OperationResult<int>.CreateSuccess(count);
-            }
         }
     }
 }

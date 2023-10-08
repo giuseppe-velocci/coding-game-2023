@@ -12,7 +12,7 @@ namespace Order.Service.Events
             Quantity = quantity;
         }
 
-        public ProductAddedToBaketEvent UpdateVersion(int version)
+        public IEvent UpdateVersion(int version)
         {
             return new ProductAddedToBaketEvent(Id, Product, Quantity) { Version = version };
         }

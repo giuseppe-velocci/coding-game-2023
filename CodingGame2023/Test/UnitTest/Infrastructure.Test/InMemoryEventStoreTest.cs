@@ -13,21 +13,21 @@ namespace Infrastructure.Test
         }
 
         [Fact]
-        public void Store_WhenEventIsNewAndVersionIsOne_Succeeds()
+        public void Store_WhenEventIsNewAndVersionIsOne_Success()
         {
             var result = _sut.Store(new GenericEvent(1));
             Assert.True(result.Success);
         }
 
         [Fact]
-        public void Store_WhenEventIsNewAndVersionIsNotOne_Fails()
+        public void Store_WhenEventIsNewAndVersionIsNotOne_Failure()
         {
             var result = _sut.Store(new GenericEvent(2));
             Assert.False(result.Success);
         }
 
         [Fact]
-        public void Store_WhenEventIsFoundAndVersionDoesNotMatch_Fails()
+        public void Store_WhenEventIsFoundAndVersionDoesNotMatch_Failure()
         {
             Key id = new();
             var _ = _sut.Store(new GenericEvent(id, 1));
@@ -36,7 +36,7 @@ namespace Infrastructure.Test
         }
 
         [Fact]
-        public void Store_WhenEventIsFoundAndVersionDoMatch_Succeeds()
+        public void Store_WhenEventIsFoundAndVersionDoMatch_Success()
         {
             Key id = new();
             var _ = _sut.Store(new GenericEvent(id, 1));
