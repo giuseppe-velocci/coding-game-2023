@@ -32,6 +32,11 @@ namespace Order.Api
             return _service.Handle(new AddProductToBasketCommand(new Key(order), product.Name, product.Quantity));
         }
 
+        public OperationResult<Key> AddPayment(string order, PaymentRequest payment)
+        {
+            return _service.Handle(new AddPaymentCommand(new Key(order), payment.Name));
+        }
+
         public IEnumerable<IProduct> GetDrinks()
         {
             return _productStore.GetProducts();

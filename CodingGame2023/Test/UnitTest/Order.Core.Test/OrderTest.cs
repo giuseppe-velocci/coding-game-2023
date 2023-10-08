@@ -30,7 +30,7 @@ namespace Order.Core.Test
         [Fact]
         public void GetTotalCost_WhenBasketIsEmpty_RetunsZero()
         {
-            var result = _sut.GetTotalCost();
+            var result = _sut.GetTotalAmount();
             Assert.Equal(0, result);
         }
 
@@ -42,21 +42,27 @@ namespace Order.Core.Test
             _sut.AddProduct(product, qty);
             double expected = product.Price * qty;
 
-            var result = _sut.GetTotalCost();
+            var result = _sut.GetTotalAmount();
             Assert.Equal(expected, result);
         }
 
         [Fact]
-        public void PayWithCard_ShouldThrowNotImplementedException()
+        public void AddPayment_WhenNoPaymentIsSet_Success()
         {
-            Assert.Throws<NotImplementedException>(() => _sut.PayWithCard());
+            var payment = new GenericPayment(new Key());
+            _sut.AddPayment(payment);
+
+            Assert.Equal(payment, _sut.GetPayment());
         }
 
         [Fact]
-        public void PayWithCash_ShouldThrowNotImplementedException()
+        public void AddPayment_WhenPaymentIsSet_OverridesAndSuccess()
         {
+            _sut.AddPayment(new GenericPayment(new Key()));
+            var payment = new GenericPayment(new Key());
+            _sut.AddPayment(payment);
 
-            Assert.Throws<NotImplementedException>(() => _sut.PayWithCash());
+            Assert.Equal(payment, _sut.GetPayment());
         }
     }
 }

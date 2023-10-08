@@ -2,9 +2,9 @@ using Core;
 using Moq;
 using Order.Core.Interfaces;
 using Order.Service.Aggregates;
+using Order.Service.CommandHandlers;
 using Order.Service.Commands;
 using Order.Service.Events;
-using Order.Service.Handlers;
 using Test.Commons;
 
 namespace Order.Service.Test
@@ -13,11 +13,12 @@ namespace Order.Service.Test
     {
         private readonly OrderCommandHandler _sut;
         private readonly Mock<IAggregate<IOrder>> _mockAggregate = new();
-        private readonly Mock<IProductStore> _mockStore = new();
+        private readonly Mock<IProductStore> _mockProductStore = new();
+        private readonly Mock<IPaymentStore> _mockPaymentStore = new();
 
         public OrderCommandHandlerTest()
         {
-            _sut = new OrderCommandHandler(_mockAggregate.Object, _mockStore.Object);
+            _sut = new OrderCommandHandler(_mockAggregate.Object, _mockProductStore.Object, _mockPaymentStore.Object);
         }
 
         [Fact]

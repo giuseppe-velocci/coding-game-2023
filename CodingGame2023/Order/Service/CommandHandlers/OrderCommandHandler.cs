@@ -3,17 +3,19 @@ using Order.Core.Interfaces;
 using Order.Service.Commands;
 using Order.Service.Events;
 
-namespace Order.Service.Handlers
+namespace Order.Service.CommandHandlers
 {
     public class OrderCommandHandler : ICommandHandler<IOrder>
     {
         private readonly IAggregate<IOrder> _aggregate;
         private readonly IProductStore _productStore;
+        private readonly IPaymentStore _paymentStore;
 
-        public OrderCommandHandler(IAggregate<IOrder> aggregate, IProductStore productStore)
+        public OrderCommandHandler(IAggregate<IOrder> aggregate, IProductStore productStore, IPaymentStore paymentStore)
         {
             _aggregate = aggregate;
             _productStore = productStore;
+            _paymentStore = paymentStore;
         }
 
         public OperationResult<Key> Handle(ICommand command)
@@ -22,6 +24,7 @@ namespace Order.Service.Handlers
             {
                 CreateOrderCommand x => Handle(x),
                 AddProductToBasketCommand x => Handle(x),
+                AddPaymentCommand x => Handle(x),
                 _ => OperationResult<IEvent>.CreateFailure("Invalid command")
             };
 
@@ -30,7 +33,7 @@ namespace Order.Service.Handlers
                 OperationResult<Key>.CreateFailure(eventfromCommand.Message);
         }
 
-        private OperationResult<IEvent> Handle(CreateOrderCommand command)
+        private static OperationResult<IEvent> Handle(CreateOrderCommand command)
         {
             return command == null ?
                 OperationResult<IEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null") :
@@ -51,6 +54,15 @@ namespace Order.Service.Handlers
             {
                 return OperationResult<IEvent>.CreateFailure("Invalid quantity");
             }
+        }
+
+        private OperationResult<IEvent> Handle(AddPaymentCommand command)
+        {
+            var payment = _paymentStore.GetPayment(command.Payment);
+
+            return payment.Success?
+                OperationResult<IEvent>.CreateFailure("Invalid payment method") :
+                OperationResult<IEvent>.CreateSuccess(new PaymentAddedEvent(command.Id, payment.Value));
         }
     }
 }

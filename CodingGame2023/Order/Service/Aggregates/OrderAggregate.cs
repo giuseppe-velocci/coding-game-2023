@@ -9,6 +9,18 @@ namespace Order.Service.Aggregates
         public OrderAggregate(IEventStore<IOrder> eventStore) : base(eventStore)
         { }
 
+        protected override OperationResult<Key> ApplyChange(IEvent storedEvent)
+        {
+            OperationResult<Key> result = storedEvent switch
+            {
+                OrderCreatedEvent x => Apply(x),
+                ProductAddedToBasketEvent x => Apply(x),
+                PaymentAddedEvent x => Apply(x),
+                _ => OperationResult<Key>.CreateFailure("Invalid event")
+            };
+            return result;
+        }
+
         private OperationResult<Key> Apply(OrderCreatedEvent newEvent)
         {
             if (Instance is null)
@@ -35,15 +47,17 @@ namespace Order.Service.Aggregates
             }
         }
 
-        protected override OperationResult<Key> ApplyChange(IEvent storedEvent)
+        private OperationResult<Key> Apply(PaymentAddedEvent newEvent)
         {
-            OperationResult<Key> result = storedEvent switch
+            if (newEvent.Payment.IsAllowed(Instance.GetTotalAmount()))
             {
-                OrderCreatedEvent x => Apply(x),
-                ProductAddedToBasketEvent x => Apply(x),
-                _ => OperationResult<Key>.CreateFailure("Invalid event")
-            };
-            return result;
+                Instance.AddPayment(newEvent.Payment);
+                return OperationResult<Key>.CreateSuccess(newEvent.Id);
+            }
+            else
+            {
+                return OperationResult<Key>.CreateFailure("Selected payment method unavailable for this amount");
+            }
         }
     }
 }

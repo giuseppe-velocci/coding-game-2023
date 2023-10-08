@@ -10,27 +10,17 @@ namespace Order.Core.Order
             Id = id;
         }
 
+        public override void AddPayment(IPayment payment)
+        {
+            Payment = payment;
+        }
+
         public override void AddProduct(IProduct product, int quantity)
         {
             if (product is not null)
             {
                 Basket.Add(product.UpdateQuantity(quantity));
             }
-        }
-
-        public override double GetTotalCost()
-        {
-            return Basket.Select(x => x.Quantity * x.Price).Sum();
-        }
-
-        public override void PayWithCard()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void PayWithCash()
-        {
-            throw new NotImplementedException();
         }
     }
 }

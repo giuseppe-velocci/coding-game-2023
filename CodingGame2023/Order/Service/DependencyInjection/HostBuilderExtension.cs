@@ -3,7 +3,7 @@ using Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Order.Core.Interfaces;
 using Order.Service.Aggregates;
-using Order.Service.Handlers;
+using Order.Service.CommandHandlers;
 using Order.Service.Stores;
 
 namespace Order.Service.DependencyInjection
