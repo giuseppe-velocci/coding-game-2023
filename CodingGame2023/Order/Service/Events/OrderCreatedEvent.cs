@@ -6,7 +6,7 @@ namespace Order.Service.Events
     {
         public Key Id { get; } = new Key();
         public string Name => nameof(OrderCreatedEvent);
-        public int Version => 1;
+        public int Version => 0;
 
         public IEvent UpdateVersion(int version)
         {

@@ -10,10 +10,16 @@ namespace Order.Api.Test
         private readonly OrderEndpoints _sut;
         private readonly Mock<ICommandHandler<IOrder>> _mockHandler = new();
         private readonly Mock<IProductStore> _mockProductStore = new();
+        private readonly Mock<IOrderStore> _mockOrderStore = new();
+        private readonly Mock<IPaymentStore> _mockPaymentStore = new();
 
         public OrderEndpointsTest()
         {
-            _sut = new OrderEndpoints(_mockHandler.Object, _mockProductStore.Object);
+            _sut = new OrderEndpoints(
+                _mockHandler.Object,
+                _mockProductStore.Object,
+                _mockOrderStore.Object,
+                _mockPaymentStore.Object);
         }
 
         [Fact]

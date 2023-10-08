@@ -37,7 +37,7 @@ namespace Infrastructure
             }
             else
             {
-                if (newEvent.Version == 1)
+                if (newEvent.Version == 0)
                 {
                     if (_store.TryAdd(aggregateKey, new List<IEvent> { newEvent }))
                     {
