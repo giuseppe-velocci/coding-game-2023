@@ -1,5 +1,5 @@
-﻿using Moq;
-using Core;
+﻿using Core;
+using Moq;
 using Order.Core.Interfaces;
 using Order.Service.Aggregates;
 using Order.Service.Events;

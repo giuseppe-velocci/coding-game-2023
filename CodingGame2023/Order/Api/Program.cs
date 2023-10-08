@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddOrderService()
-    .AddSingleton<OrderEndpoints>();
+    .AddTransient<OrderEndpoints>();
 
 var app = builder.Build();
 
@@ -26,17 +26,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/order/{id}", (string id) =>
-    new Key[] { app.Services.GetRequiredService<OrderEndpoints>().GetOrder(new Key(id)) }
-);
-
-app.MapGet("/drinks", () =>
-    app.Services.GetRequiredService<OrderEndpoints>().GetDrinks()
-);
+{
+    var result = app.Services.GetRequiredService<OrderEndpoints>().GetOrder(new Key(id));
+    return result.Success ? Results.Ok(result) : Results.BadRequest(result);
+});
 
 app.MapPost("/order", () =>
 {
     var result = app.Services.GetRequiredService<OrderEndpoints>().CreateOrder();
-    return result.Success ? Results.Ok(result) : Results.BadRequest(result);
+    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
 }
 );
 
@@ -48,7 +46,7 @@ app.MapPost("/add-product-to-basket/{order}", (string order, ProductRequest prod
     }
 
     var result = app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product);
-    return result.Success? Results.Ok(result) : Results.BadRequest(result);
+    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
 });
 
 app.Run();

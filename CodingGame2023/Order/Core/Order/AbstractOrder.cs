@@ -11,7 +11,7 @@ namespace Order.Core.Order
 
         public IEnumerable<IProduct> GetProducts() => Basket.ToArray();
         public IPayment? GetPayment() => Payment;
-        public double GetTotalAmount() => Basket.Select(x => x.Quantity* x.Price).Sum();
+        public double GetTotalAmount() => Basket.Select(x => x.Quantity * x.Price).Sum();
 
         public abstract void AddProduct(IProduct product, int quantity);
         public abstract void AddPayment(IPayment payment);

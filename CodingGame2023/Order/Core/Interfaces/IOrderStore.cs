@@ -2,7 +2,7 @@
 
 namespace Order.Core.Interfaces
 {
-    internal interface IOrderStore
+    public interface IOrderStore
     {
         public OperationResult<IOrder> GetOrder(Key id);
     }

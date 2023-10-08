@@ -9,18 +9,19 @@ namespace Order.Api
     {
         private readonly ICommandHandler<IOrder> _service;
         private readonly IProductStore _productStore;
+        private readonly IOrderStore _orderStore;
 
-        public OrderEndpoints(ICommandHandler<IOrder> service, IProductStore productStore)
+        public OrderEndpoints(ICommandHandler<IOrder> service, IProductStore productStore, IOrderStore orderStore)
         {
             _service = service;
             _productStore = productStore;
+            _orderStore = orderStore;
         }
 
-        public Key GetOrder(Key id)
+        public OperationResult<IOrder> GetOrder(Key id)
         {
-            return id;
+            return _orderStore.GetOrder(id);
         }
-
 
         public OperationResult<Key> CreateOrder()
         {

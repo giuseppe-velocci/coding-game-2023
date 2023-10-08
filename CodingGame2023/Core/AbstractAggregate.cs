@@ -2,12 +2,18 @@
 {
     public abstract class AbstractAggregate<T> : IAggregate<T> where T : class
     {
-        public T Instance { get; protected set; } = null!;
+        protected T Instance { get; set; } = null!;
         protected readonly IEventStore<T> _eventStore;
 
         protected AbstractAggregate(IEventStore<T> eventStore)
         {
             _eventStore = eventStore;
+        }
+
+        public T? GetInstance(Key id)
+        {
+            ApplyAllChanges(id);
+            return Instance;
         }
 
         public OperationResult<Key> Apply(IEvent newEvent)

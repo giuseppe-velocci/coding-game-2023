@@ -1,7 +1,6 @@
 using Core;
 using Moq;
 using Order.Core.Interfaces;
-using Order.Service.Aggregates;
 using Order.Service.CommandHandlers;
 using Order.Service.Commands;
 using Order.Service.Events;

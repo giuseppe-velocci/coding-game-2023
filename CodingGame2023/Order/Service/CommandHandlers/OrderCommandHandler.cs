@@ -60,7 +60,7 @@ namespace Order.Service.CommandHandlers
         {
             var payment = _paymentStore.GetPayment(command.Payment);
 
-            return payment.Success?
+            return payment.Success ?
                 OperationResult<IEvent>.CreateFailure("Invalid payment method") :
                 OperationResult<IEvent>.CreateSuccess(new PaymentAddedEvent(command.Id, payment.Value));
         }

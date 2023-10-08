@@ -1,6 +1,6 @@
 ﻿namespace Core
 {
-    public class Key
+    public record class Key
     {
         public string Value { get; }
         public Key()
