@@ -5,7 +5,10 @@ namespace Order.Core.Interfaces
     public interface IPayment
     {
         PaymentOutcome PaymentOutcome { get; }
+        PaymentType PaymentType { get; }
         public Key OrderId { get; }
+
+
         bool IsAllowed(double amount);
         IPayment UpdateOrderId(Key orderId);
     }
@@ -15,5 +18,11 @@ namespace Order.Core.Interfaces
         Unkown,
         Failure,
         Success
+    }
+
+    public enum PaymentType
+    {
+        Cash,
+        Card
     }
 }

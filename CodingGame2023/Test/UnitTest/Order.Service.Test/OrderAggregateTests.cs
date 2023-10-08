@@ -29,7 +29,7 @@ namespace Order.Service.Test
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(orderCreatedEvent.Id, _sut.Instance.Id);
+            Assert.Equal(orderCreatedEvent.Id, _sut.GetInstance(orderCreatedEvent.Id)!.Id);
             _mockEventStore.Verify(store => store.Store(orderCreatedEvent), Times.Once);
         }
 
@@ -45,7 +45,7 @@ namespace Order.Service.Test
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal(orderCreatedEvent.Id, _sut.Instance.Id);
+            Assert.Equal(orderCreatedEvent.Id, _sut.GetInstance(orderCreatedEvent.Id)!.Id);
             _mockEventStore.Verify(store => store.Store(orderCreatedEvent), Times.Never);
         }
 
@@ -67,7 +67,7 @@ namespace Order.Service.Test
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(2, _sut.Instance.GetProducts().Single().Quantity);
+            Assert.Equal(2, _sut.GetInstance(orderCreatedEvent.Id)!.GetProducts().Single().Quantity);
             _mockEventStore.Verify(store => store.Store(productAddedEvent), Times.Once);
         }
 

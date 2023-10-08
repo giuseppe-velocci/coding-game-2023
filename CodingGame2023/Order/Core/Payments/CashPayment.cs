@@ -15,6 +15,7 @@ namespace Order.Core.Payments
 
         public Key OrderId { get; private init; } = null!;
         public PaymentOutcome PaymentOutcome { get; } = PaymentOutcome.Unkown;
+        public PaymentType PaymentType => PaymentType.Cash;
 
         public bool IsAllowed(double amount)
         {
