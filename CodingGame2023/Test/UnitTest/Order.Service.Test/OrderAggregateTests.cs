@@ -56,7 +56,7 @@ namespace Order.Service.Test
             var orderCreatedEvent = new OrderCreatedEvent();
             _mockEventStore.Setup(x => x.GetEvents(It.IsAny<Key>())).Returns(new[] { orderCreatedEvent });
 
-            var productAddedEvent = new ProductAddedToBaketEvent(
+            var productAddedEvent = new ProductAddedToBasketEvent(
                 orderCreatedEvent.Id,
                 new SampleProduct(),
                 2

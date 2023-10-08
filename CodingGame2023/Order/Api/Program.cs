@@ -39,13 +39,24 @@ app.MapPost("/order", () =>
     new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().CreateOrder() }
 );
 
-app.MapPost("/add-product-to-basket/{order}", async (string order, HttpRequest request, Stream body) =>
-{
-    var readSize = (int?)request.ContentLength ?? (1024);
-    var buffer = new byte[readSize];
-    var read = await body.ReadAsync(buffer, CancellationToken.None);
+//app.MapPost("/add-product-to-basket/{order}", async (string order, HttpRequest request) =>
+//{
+//    string body = "";
+//    using (StreamReader stream = new StreamReader(request.Body))
+//    {
+//        body = await stream.ReadToEndAsync();
+//    }
+//    ProductRequest? product = JsonSerializer.Deserialize<ProductRequest>(body);
 
-    ProductRequest? product = JsonSerializer.Deserialize<ProductRequest>(read);
+//    if (product == null)
+//    {
+//        return Results.BadRequest("Invalid body");
+//    }
+//    return Results.Ok(new OperationResult<Key>[] { app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product) });
+//});
+
+app.MapPost("/add-product-to-basket/{order}", (string order, ProductRequest product) =>
+{
     if (product == null)
     {
         return Results.BadRequest("Invalid body");

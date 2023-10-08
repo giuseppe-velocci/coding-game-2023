@@ -12,6 +12,11 @@
 
         public OperationResult<Key> Apply(IEvent newEvent)
         {
+            if (newEvent is null)
+            {
+                return OperationResult<Key>.CreateFailure("Invalid event");
+            }
+
             var newVersionResult = ApplyAllChanges(newEvent.Id);
             if (newVersionResult.Success)
             {

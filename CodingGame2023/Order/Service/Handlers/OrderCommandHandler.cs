@@ -1,6 +1,5 @@
 ﻿using Core;
 using Order.Core.Interfaces;
-using Order.Service.Aggregates;
 using Order.Service.Commands;
 using Order.Service.Events;
 
@@ -36,13 +35,20 @@ namespace Order.Service.Handlers
                 OperationResult<OrderCreatedEvent>.CreateSuccess(new());
         }
 
-        private OperationResult<ProductAddedToBaketEvent> Handle(AddProductToBasketCommand command)
+        private OperationResult<ProductAddedToBasketEvent> Handle(AddProductToBasketCommand command)
         {
-            var productSearch = _productStore.Find(command.ProductName);
+            if (command.Quantity > 0)
+            {
+                var productSearch = _productStore.Find(command.ProductName);
 
-            return productSearch.Success ?
-                OperationResult<ProductAddedToBaketEvent>.CreateSuccess(new ProductAddedToBaketEvent(command.Id, productSearch.Value, command.Quantity)) :
-                OperationResult<ProductAddedToBaketEvent>.CreateFailure("Product not found");
+                return productSearch.Success ?
+                    OperationResult<ProductAddedToBasketEvent>.CreateSuccess(new ProductAddedToBasketEvent(command.Id, productSearch.Value, command.Quantity)) :
+                    OperationResult<ProductAddedToBasketEvent>.CreateFailure("Product not found");
+            }
+            else
+            {
+                return OperationResult<ProductAddedToBasketEvent>.CreateFailure("Invalid quantity");
+            }
         }
     }
 }

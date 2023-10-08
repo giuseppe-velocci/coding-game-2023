@@ -22,7 +22,7 @@ namespace Order.Service.Aggregates
             }
         }
 
-        private OperationResult<Key> Apply(ProductAddedToBaketEvent newEvent)
+        private OperationResult<Key> Apply(ProductAddedToBasketEvent newEvent)
         {
             Instance.AddProduct(newEvent.Product, newEvent.Quantity);
             return OperationResult<Key>.CreateSuccess(newEvent.Id);
@@ -33,7 +33,7 @@ namespace Order.Service.Aggregates
             OperationResult<Key> result = storedEvent switch
             {
                 OrderCreatedEvent x => Apply(x),
-                ProductAddedToBaketEvent x => Apply(x),
+                ProductAddedToBasketEvent x => Apply(x),
                 _ => OperationResult<Key>.CreateFailure("Invalid event")
             };
             return result;
