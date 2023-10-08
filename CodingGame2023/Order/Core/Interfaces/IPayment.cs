@@ -7,6 +7,7 @@ namespace Order.Core.Interfaces
         PaymentOutcome PaymentOutcome { get; }
         public Key OrderId { get; }
         bool IsAllowed(double amount);
+        IPayment UpdateOrderId(Key orderId);
     }
 
     public enum PaymentOutcome

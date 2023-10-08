@@ -25,20 +25,31 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//GET
 app.MapGet("/order/{id}", (string id) =>
 {
     var result = app.Services.GetRequiredService<OrderEndpoints>().GetOrder(new Key(id));
     return result.Success ? Results.Ok(result) : Results.BadRequest(result);
 });
 
+app.MapGet("/drinks", () => Results.Ok(app.Services.GetRequiredService<OrderEndpoints>().GetDrinks()));
+
+app.MapGet("/payments", () => Results.Ok(app.Services.GetRequiredService<OrderEndpoints>().GetPayments()));
+
+//POST
 app.MapPost("/order", () =>
 {
     var result = app.Services.GetRequiredService<OrderEndpoints>().CreateOrder();
     return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
-}
-);
+});
 
-app.MapPost("/add-product-to-basket/{order}", (string order, ProductRequest product) =>
+app.MapPost("/order/add-payment/{id}", (string id, PaymentRequest payment) =>
+{
+    var result = app.Services.GetRequiredService<OrderEndpoints>().AddPayment(id, payment);
+    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
+});
+
+app.MapPost("/order/add-product/{order}", (string order, ProductRequest product) =>
 {
     if (product is null)
     {

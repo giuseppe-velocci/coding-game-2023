@@ -49,6 +49,11 @@ namespace Order.Service.Aggregates
 
         private OperationResult<Key> Apply(PaymentAddedEvent newEvent)
         {
+            if (Instance is null)
+            {
+                return OperationResult<Key>.CreateFailure("Order does not exists");
+            }
+
             if (newEvent.Payment.IsAllowed(Instance.GetTotalAmount()))
             {
                 Instance.AddPayment(newEvent.Payment);

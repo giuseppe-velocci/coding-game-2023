@@ -20,5 +20,10 @@ namespace Order.Service.Stores
                 OperationResult<IPayment>.CreateFailure("Payment not found") :
                 OperationResult<IPayment>.CreateSuccess(payment);
         }
+
+        public IEnumerable<string> GetPayments()
+        {
+            return _payments.Select(x => x.GetType().Name);
+        }
     }
 }

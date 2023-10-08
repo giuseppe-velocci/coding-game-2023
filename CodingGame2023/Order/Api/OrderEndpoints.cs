@@ -10,12 +10,14 @@ namespace Order.Api
         private readonly ICommandHandler<IOrder> _service;
         private readonly IProductStore _productStore;
         private readonly IOrderStore _orderStore;
+        private readonly IPaymentStore _paymentStore;
 
-        public OrderEndpoints(ICommandHandler<IOrder> service, IProductStore productStore, IOrderStore orderStore)
+        public OrderEndpoints(ICommandHandler<IOrder> service, IProductStore productStore, IOrderStore orderStore, IPaymentStore paymentStore)
         {
             _service = service;
             _productStore = productStore;
             _orderStore = orderStore;
+            _paymentStore = paymentStore;
         }
 
         public OperationResult<Core.Order.Order> GetOrder(Key id)
@@ -41,6 +43,11 @@ namespace Order.Api
         public IEnumerable<IProduct> GetDrinks()
         {
             return _productStore.GetProducts();
+        }
+
+        public IEnumerable<string> GetPayments() 
+        {
+            return _paymentStore.GetPayments();
         }
     }
 }
