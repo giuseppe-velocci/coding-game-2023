@@ -10,27 +10,27 @@
             _eventStore = eventStore;
         }
 
-        public T? GetInstance(Key id)
+        public async Task<T?> GetInstance(Key id)
         {
-            ApplyAllChanges(id);
+            await ApplyAllChanges(id);
             return Instance;
         }
 
-        public OperationResult<Key> Apply(IEvent newEvent)
+        public async Task<OperationResult<Key>> Apply(IEvent newEvent)
         {
             if (newEvent is null)
             {
                 return OperationResult<Key>.CreateFailure("Invalid event");
             }
 
-            var newVersionResult = ApplyAllChanges(newEvent.Id);
+            var newVersionResult = await ApplyAllChanges(newEvent.Id);
             if (newVersionResult.Success)
             {
                 var versionedEvent = newEvent.UpdateVersion(newVersionResult.Value);
                 var result = ApplyChange(versionedEvent);
                 if (result.Success)
                 {
-                    _eventStore.Store(versionedEvent);
+                    await _eventStore.StoreAsync(versionedEvent);
                 }
                 return result;
             }
@@ -42,9 +42,9 @@
 
         protected abstract OperationResult<Key> ApplyChange(IEvent storedEvent);
 
-        protected OperationResult<int> ApplyAllChanges(Key id)
+        protected async Task<OperationResult<int>> ApplyAllChanges(Key id)
         {
-            var events = _eventStore.GetEvents(id);
+            var events = await _eventStore.GetEventsAsync(id);
             var results = events.Select(x => ApplyChange(x));
             if (results.Any(x => !x.Success))
             {

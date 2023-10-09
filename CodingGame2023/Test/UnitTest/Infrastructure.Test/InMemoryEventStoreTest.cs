@@ -13,65 +13,65 @@ namespace Infrastructure.Test
         }
 
         [Fact]
-        public void Store_WhenEventIsNewAndVersionIsOne_Success()
+        public async Task Store_WhenEventIsNewAndVersionIsOne_Success()
         {
-            var result = _sut.Store(new SampleEvent(0));
+            var result = await _sut.StoreAsync(new SampleEvent(0));
             Assert.True(result.Success);
         }
 
         [Fact]
-        public void Store_WhenEventIsNewAndVersionIsNotOne_Failure()
+        public async Task Store_WhenEventIsNewAndVersionIsNotOne_Failure()
         {
-            var result = _sut.Store(new SampleEvent(2));
+            var result = await _sut.StoreAsync(new SampleEvent(2));
             Assert.False(result.Success);
         }
 
         [Theory]
         [InlineData(0)]
         [InlineData(2)]
-        public void Store_WhenEventIsFoundAndVersionDoesNotMatch_Failure(int version)
+        public async Task Store_WhenEventIsFoundAndVersionDoesNotMatch_Failure(int version)
         {
             Key id = new();
-            var _ = _sut.Store(new SampleEvent(id, 0));
-            var result = _sut.Store(new SampleEvent(id, version));
-            Assert.Single(_sut.GetEvents(id));
+            var _ = await _sut.StoreAsync(new SampleEvent(id, 0));
+            var result = await _sut.StoreAsync(new SampleEvent(id, version));
+            Assert.Single(await _sut.GetEventsAsync(id));
             Assert.False(result.Success);
         }
 
         [Fact]
-        public void Store_WhenEventIsFoundAndVersionDoMatch_Success()
+        public async Task Store_WhenEventIsFoundAndVersionDoMatch_Success()
         {
             Key id = new();
-            var _ = _sut.Store(new SampleEvent(id, 0));
-            var result = _sut.Store(new SampleEvent(id, 1));
+            var _ = await _sut.StoreAsync(new SampleEvent(id, 0));
+            var result = await _sut.StoreAsync(new SampleEvent(id, 1));
             Assert.True(result.Success);
         }
 
         [Fact]
-        public void GetEvents_WhenEventIsFound_ReturnsList()
+        public async Task GetEvents_WhenEventIsFound_ReturnsList()
         {
             Key id = new();
-            var _ = _sut.Store(new SampleEvent(id, 0));
-            var __ = _sut.Store(new SampleEvent(id, 1));
-            var result = _sut.GetEvents(id);
+            var _ = await _sut.StoreAsync(new SampleEvent(id, 0));
+            var __ = await _sut.StoreAsync(new SampleEvent(id, 1));
+            var result = await _sut.GetEventsAsync(id);
             Assert.Equal(2, result.Count);
         }
 
         [Fact]
-        public void GetEvents_WhenEventIdIsNullEvenIfEventsReStored_ReturnsList()
+        public async Task GetEvents_WhenEventIdIsNullEvenIfEventsReStored_ReturnsList()
         {
             Key id = new();
-            var _ = _sut.Store(new SampleEvent(id, 0));
-            var __ = _sut.Store(new SampleEvent(id, 1));
-            var result = _sut.GetEvents(null!);
+            var _ = await _sut.StoreAsync(new SampleEvent(id, 0));
+            var __ = await _sut.StoreAsync(new SampleEvent(id, 1));
+            var result = await _sut.GetEventsAsync(null!);
             Assert.Empty(result);
         }
 
         [Fact]
-        public void GetEvents_WhenEventIsNotFound_ReturnsEmptyList()
+        public async Task GetEvents_WhenEventIsNotFound_ReturnsEmptyList()
         {
             Key id = new();
-            var result = _sut.GetEvents(id);
+            var result = await _sut.GetEventsAsync(id);
             Assert.Empty(result);
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Order.Api.Models
+﻿namespace Order.Core.Dto
 {
     public record class ProductRequest
     {

@@ -18,43 +18,45 @@ namespace Order.Service.Test
         }
 
         [Fact]
-        public void Apply_WhenOrderCreatedEvent_Success()
+        public async Task Apply_WhenOrderCreatedEvent_Success()
         {
             // Arrange
             var orderCreatedEvent = new OrderCreatedEvent();
-            _mockEventStore.Setup(x => x.GetEvents(orderCreatedEvent.Id)).Returns(Array.Empty<IEvent>());
+            _mockEventStore.Setup(x => x.GetEventsAsync(orderCreatedEvent.Id)).ReturnsAsync(Array.Empty<IEvent>());
 
             // Act
-            var result = _sut.Apply(orderCreatedEvent);
+            var result = await _sut.Apply(orderCreatedEvent);
+            var instance = await _sut.GetInstance(orderCreatedEvent.Id);
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(orderCreatedEvent.Id, _sut.GetInstance(orderCreatedEvent.Id)!.Id);
-            _mockEventStore.Verify(store => store.Store(orderCreatedEvent), Times.Once);
+            Assert.Equal(orderCreatedEvent.Id, instance!.Id);
+            _mockEventStore.Verify(store => store.StoreAsync(orderCreatedEvent), Times.Once);
         }
 
         [Fact]
-        public void Apply_WhenOrderCreatedEventAndEventAlreadyExists_Failure()
+        public async Task Apply_WhenOrderCreatedEventAndEventAlreadyExists_Failure()
         {
             // Arrange
             var orderCreatedEvent = new OrderCreatedEvent();
-            _mockEventStore.Setup(x => x.GetEvents(orderCreatedEvent.Id)).Returns(new[] { orderCreatedEvent });
+            _mockEventStore.Setup(x => x.GetEventsAsync(orderCreatedEvent.Id)).ReturnsAsync(new[] { orderCreatedEvent });
 
             // Act
-            var result = _sut.Apply(orderCreatedEvent);
+            var result = await _sut.Apply(orderCreatedEvent);
+            var instance = await _sut.GetInstance(orderCreatedEvent.Id);
 
             // Assert
             Assert.False(result.Success);
-            Assert.Equal(orderCreatedEvent.Id, _sut.GetInstance(orderCreatedEvent.Id)!.Id);
-            _mockEventStore.Verify(store => store.Store(It.IsAny<IEvent>()), Times.Never);
+            Assert.Equal(orderCreatedEvent.Id, instance!.Id);
+            _mockEventStore.Verify(store => store.StoreAsync(It.IsAny<IEvent>()), Times.Never);
         }
 
         [Fact]
-        public void Apply_WhenProductAddedToBasketEvent_Success()
+        public async Task Apply_WhenProductAddedToBasketEvent_Success()
         {
             // Arrange
             var orderCreatedEvent = new OrderCreatedEvent();
-            _mockEventStore.Setup(x => x.GetEvents(It.IsAny<Key>())).Returns(new[] { orderCreatedEvent });
+            _mockEventStore.Setup(x => x.GetEventsAsync(It.IsAny<Key>())).ReturnsAsync(new[] { orderCreatedEvent });
 
             var productAddedEvent = new ProductAddedToBasketEvent(
                 orderCreatedEvent.Id,
@@ -63,57 +65,59 @@ namespace Order.Service.Test
             );
 
             // Act
-            var result = _sut.Apply(productAddedEvent);
+            var result = await _sut.Apply(productAddedEvent);
+            var instance = await _sut.GetInstance(orderCreatedEvent.Id);
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(2, _sut.GetInstance(orderCreatedEvent.Id)!.GetProducts().Single().Quantity);
-            _mockEventStore.Verify(store => store.Store(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
+            Assert.Equal(2, instance!.GetProducts().Single().Quantity);
+            _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
         }
 
         [Fact]
-        public void Apply_WhenPaymentAddedEventAndOrderExists_Success()
+        public async Task Apply_WhenPaymentAddedEventAndOrderExists_Success()
         {
             // Arrange
             var orderCreatedEvent = new OrderCreatedEvent();
-            _mockEventStore.Setup(x => x.GetEvents(It.IsAny<Key>())).Returns(new[] { orderCreatedEvent });
+            _mockEventStore.Setup(x => x.GetEventsAsync(It.IsAny<Key>())).ReturnsAsync(new[] { orderCreatedEvent });
             var paymentAddedEvent = new PaymentAddedEvent(orderCreatedEvent.Id, new SamplePayment(orderCreatedEvent.Id));
 
             // Act
-            var result = _sut.Apply(paymentAddedEvent);
+            var result = await _sut.Apply(paymentAddedEvent);
+            var instance = await _sut.GetInstance(orderCreatedEvent.Id);
 
             // Assert
             Assert.True(result.Success);
-            Assert.Equal(paymentAddedEvent.Id, _sut.GetInstance(paymentAddedEvent.Id)!.Id);
-            _mockEventStore.Verify(store => store.Store(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
+            Assert.Equal(paymentAddedEvent.Id, instance!.Id);
+            _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
         }
 
         [Fact]
-        public void Apply_WhenPaymentAddedEventAndOrderDoesNotExists_Failure()
+        public async Task Apply_WhenPaymentAddedEventAndOrderDoesNotExists_Failure()
         {
             // Arrange
             Key id = new();
             var paymentAddedEvent = new PaymentAddedEvent(id, new SamplePayment(id));
-            _mockEventStore.Setup(x => x.GetEvents(paymentAddedEvent.Id)).Returns(Array.Empty<IEvent>());
+            _mockEventStore.Setup(x => x.GetEventsAsync(paymentAddedEvent.Id)).ReturnsAsync(Array.Empty<IEvent>());
 
             // Act
-            var result = _sut.Apply(paymentAddedEvent);
+            var result = await _sut.Apply(paymentAddedEvent);
 
             // Assert
             Assert.False(result.Success);
-            _mockEventStore.Verify(store => store.Store(It.IsAny<IEvent>()), Times.Never);
+            _mockEventStore.Verify(store => store.StoreAsync(It.IsAny<IEvent>()), Times.Never);
         }
 
         [Fact]
-        public void Apply_WhenUnhandledEvent_Failure()
+        public async Task Apply_WhenUnhandledEvent_Failure()
         {
             // Arrange
             var invalidEvent = new SampleEvent(0);
-            _mockEventStore.Setup(x => x.GetEvents(It.IsAny<Key>())).Returns(Array.Empty<IEvent>());
+            _mockEventStore.Setup(x => x.GetEventsAsync(It.IsAny<Key>())).ReturnsAsync(Array.Empty<IEvent>());
 
 
             // Act
-            var result = _sut.Apply(invalidEvent);
+            var result = await _sut.Apply(invalidEvent);
 
             // Assert
             Assert.False(result.Success);

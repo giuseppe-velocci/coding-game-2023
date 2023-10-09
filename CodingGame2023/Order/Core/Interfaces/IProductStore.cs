@@ -4,7 +4,7 @@ namespace Order.Core.Interfaces
 {
     public interface IProductStore
     {
-        IEnumerable<IProduct> GetProducts();
-        OperationResult<IProduct> Find(string productName);
+        Task<IEnumerable<IProduct>> GetProductsAsync();
+        Task<OperationResult<IProduct>> FindAsync(string productName);
     }
 }

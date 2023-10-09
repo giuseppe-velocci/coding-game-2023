@@ -14,18 +14,18 @@ namespace Order.Service.Stores
             new Chocolate()
         };
 
-        public OperationResult<IProduct> Find(string productName)
+        public Task<OperationResult<IProduct>> FindAsync(string productName)
         {
             var product = _drinks.FirstOrDefault(x => x.Name == productName);
 
-            return product is null ?
+            return Task.FromResult(product is null ?
                 OperationResult<IProduct>.CreateFailure("Product not found") :
-                OperationResult<IProduct>.CreateSuccess(product);
+                OperationResult<IProduct>.CreateSuccess(product));
         }
 
-        public IEnumerable<IProduct> GetProducts()
+        public Task<IEnumerable<IProduct>> GetProductsAsync()
         {
-            return _drinks.ToArray();
+            return Task.FromResult(_drinks.ToArray() as IEnumerable<IProduct>);
         }
     }
 }

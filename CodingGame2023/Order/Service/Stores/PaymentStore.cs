@@ -12,18 +12,18 @@ namespace Order.Service.Stores
             new CashPayment(),
         };
 
-        public OperationResult<IPayment> Find(string name)
+        public Task<OperationResult<IPayment>> FindAsync(string name)
         {
             var payment = _payments.FirstOrDefault(x => name == x.GetType().Name);
 
-            return payment is null ?
+            return Task.FromResult(payment is null ?
                 OperationResult<IPayment>.CreateFailure("Payment not found") :
-                OperationResult<IPayment>.CreateSuccess(payment);
+                OperationResult<IPayment>.CreateSuccess(payment));
         }
 
-        public IEnumerable<string> GetPayments()
+        public Task<IEnumerable<string>> GetPaymentsAsync()
         {
-            return _payments.Select(x => x.GetType().Name);
+            return Task.FromResult(_payments.Select(x => x.GetType().Name));
         }
     }
 }

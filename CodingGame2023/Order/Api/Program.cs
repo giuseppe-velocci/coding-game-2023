@@ -1,6 +1,5 @@
-using Core;
 using Order.Api;
-using Order.Api.Models;
+using Order.Core.Interfaces;
 using Order.Service.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services
-    .AddOrderService()
-    .AddTransient<OrderEndpoints>();
+//Add business services
+builder.Services.AddOrderService();
 
 var app = builder.Build();
 
@@ -25,39 +23,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//GET
-app.MapGet("/order/{id}", (string id) =>
-{
-    var result = app.Services.GetRequiredService<OrderEndpoints>().GetOrder(new Key(id));
-    return result.Success ? Results.Ok(result) : Results.BadRequest(result);
-});
-
-app.MapGet("/drinks", () => Results.Ok(app.Services.GetRequiredService<OrderEndpoints>().GetDrinks()));
-
-app.MapGet("/payments", () => Results.Ok(app.Services.GetRequiredService<OrderEndpoints>().GetPayments()));
-
-//POST
-app.MapPost("/order", () =>
-{
-    var result = app.Services.GetRequiredService<OrderEndpoints>().CreateOrder();
-    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
-});
-
-app.MapPost("/order/add-payment/{id}", (string id, PaymentRequest payment) =>
-{
-    var result = app.Services.GetRequiredService<OrderEndpoints>().AddPayment(id, payment);
-    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
-});
-
-app.MapPost("/order/add-product/{order}", (string order, ProductRequest product) =>
-{
-    if (product is null)
-    {
-        return Results.BadRequest("Invalid body");
-    }
-
-    var result = app.Services.GetRequiredService<OrderEndpoints>().AddToBasket(order, product);
-    return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
-});
+EndpointsBinder.BindOrderEndpoints(app, () => app.Services.GetRequiredService<IOrderEndpointsService>());
 
 app.Run();

@@ -18,33 +18,35 @@ namespace Order.Service.CommandHandlers
             _paymentStore = paymentStore;
         }
 
-        public OperationResult<Key> Handle(ICommand command)
+        public async Task<OperationResult<Key>> HandleAsync(ICommand command)
         {
-            var eventfromCommand = command switch
+            var eventfromCommandTask = command switch
             {
                 CreateOrderCommand x => Handle(x),
                 AddProductToBasketCommand x => Handle(x),
                 AddPaymentCommand x => Handle(x),
-                _ => OperationResult<IEvent>.CreateFailure("Invalid command")
+                _ => Task.FromResult(OperationResult<IEvent>.CreateFailure("Invalid command"))
             };
 
+            var eventfromCommand = await eventfromCommandTask;
+
             return eventfromCommand.Success ?
-                _aggregate.Apply(eventfromCommand.Value) :
+                await _aggregate.Apply(eventfromCommand.Value) :
                 OperationResult<Key>.CreateFailure(eventfromCommand.Message);
         }
 
-        private static OperationResult<IEvent> Handle(CreateOrderCommand command)
+        private static Task<OperationResult<IEvent>> Handle(CreateOrderCommand command)
         {
-            return command == null ?
+            return Task.FromResult(command == null ?
                 OperationResult<IEvent>.CreateFailure($"{nameof(CreateOrderCommand)} cannot be null") :
-                OperationResult<IEvent>.CreateSuccess(new OrderCreatedEvent());
+                OperationResult<IEvent>.CreateSuccess(new OrderCreatedEvent()));
         }
 
-        private OperationResult<IEvent> Handle(AddProductToBasketCommand command)
+        private async Task<OperationResult<IEvent>> Handle(AddProductToBasketCommand command)
         {
             if (command.Quantity > 0)
             {
-                var productSearch = _productStore.Find(command.ProductName);
+                var productSearch = await _productStore.FindAsync(command.ProductName);
 
                 return productSearch.Success ?
                     OperationResult<IEvent>.CreateSuccess(new ProductAddedToBasketEvent(command.Id, productSearch.Value, command.Quantity)) :
@@ -56,9 +58,9 @@ namespace Order.Service.CommandHandlers
             }
         }
 
-        private OperationResult<IEvent> Handle(AddPaymentCommand command)
+        private async Task<OperationResult<IEvent>> Handle(AddPaymentCommand command)
         {
-            var payment = _paymentStore.Find(command.Payment);
+            var payment = await _paymentStore.FindAsync(command.Payment);
 
             return payment.Success ?
                 OperationResult<IEvent>.CreateSuccess(new PaymentAddedEvent(command.Id, payment.Value.UpdateOrderId(command.Id))) :

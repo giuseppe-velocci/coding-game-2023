@@ -12,9 +12,9 @@ namespace Order.Service.Stores
             _aggregate = aggregate;
         }
 
-        OperationResult<Core.Order.Order> IOrderStore.GetOrder(Key id)
+        async Task<OperationResult<Core.Order.Order>> IOrderStore.GetOrderAsync(Key id)
         {
-            IOrder? result = _aggregate.GetInstance(id);
+            IOrder? result = await _aggregate.GetInstance(id);
 
             return result is null ?
                 OperationResult<Core.Order.Order>.CreateFailure("Order not found for provided key") :

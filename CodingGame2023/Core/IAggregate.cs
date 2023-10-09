@@ -2,7 +2,7 @@
 {
     public interface IAggregate<T> where T : class
     {
-        T? GetInstance(Key id);
-        OperationResult<Key> Apply(IEvent newEvent);
+        Task<T?> GetInstance(Key id);
+        Task<OperationResult<Key>> Apply(IEvent newEvent);
     }
 }

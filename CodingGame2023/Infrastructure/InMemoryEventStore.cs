@@ -8,19 +8,19 @@ namespace Infrastructure
         private readonly ConcurrentDictionary<Key, List<IEvent>> _store = new();
         private readonly string _aggregateName = typeof(TAggregate).Name;
 
-        public IReadOnlyCollection<IEvent> GetEvents(Key id)
+        public Task<IReadOnlyCollection<IEvent>> GetEventsAsync(Key id)
         {
             if (id is not null && _store.TryGetValue(id, out var events))
             {
-                return events;
+                return Task.FromResult(events as IReadOnlyCollection<IEvent>);
             }
             else
             {
-                return Array.Empty<IEvent>().ToList();
+                return Task.FromResult(Array.Empty<IEvent>() as IReadOnlyCollection<IEvent>);
             }
         }
 
-        public OperationResult<None> Store(IEvent newEvent)
+        public Task<OperationResult<None>> StoreAsync(IEvent newEvent)
         {
             var aggregateKey = newEvent.Id;
             if (_store.TryGetValue(aggregateKey, out var record))
@@ -28,11 +28,11 @@ namespace Infrastructure
                 if (record.Count == newEvent.Version)
                 {
                     record.Add(newEvent);
-                    return OperationResult<None>.CreateSuccess();
+                    return Task.FromResult(OperationResult<None>.CreateSuccess());
                 }
                 else
                 {
-                    return OperationResult<None>.CreateFailure($"Unexpected version number on update of {_aggregateName} at {aggregateKey}");
+                    return Task.FromResult(OperationResult<None>.CreateFailure($"Unexpected version number on update of {_aggregateName} at {aggregateKey}"));
                 }
             }
             else
@@ -41,16 +41,16 @@ namespace Infrastructure
                 {
                     if (_store.TryAdd(aggregateKey, new List<IEvent> { newEvent }))
                     {
-                        return OperationResult<None>.CreateSuccess();
+                        return Task.FromResult(OperationResult<None>.CreateSuccess());
                     }
                     else
                     {
-                        return OperationResult<None>.CreateFailure($"Cannot store a new aggregate for of {_aggregateName} at {aggregateKey} because it is already stored");
+                        return Task.FromResult(OperationResult<None>.CreateFailure($"Cannot store a new aggregate for of {_aggregateName} at {aggregateKey} because it is already stored"));
                     }
                 }
                 else
                 {
-                    return OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1");
+                    return Task.FromResult(OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1"));
                 }
             }
         }

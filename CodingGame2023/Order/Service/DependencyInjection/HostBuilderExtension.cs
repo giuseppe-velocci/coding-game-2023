@@ -17,6 +17,7 @@ namespace Order.Service.DependencyInjection
                 .AddSingleton<IProductStore, ProductStore>()
                 .AddSingleton<IPaymentStore, PaymentStore>()
 
+                .AddTransient<IOrderEndpointsService, OrderEndpointsService>()
                 .AddTransient<ICommandHandler<IOrder>, OrderCommandHandler>()
                 .AddTransient<IAggregate<IOrder>, OrderAggregate>()
                 .AddTransient<IOrderStore, OrderStore>()
