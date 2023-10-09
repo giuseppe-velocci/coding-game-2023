@@ -42,6 +42,12 @@ namespace Order.Service.Aggregates
             }
             else
             {
+                IProduct? existingProduct = Instance.GetProducts().FirstOrDefault(x => x.Name == newEvent.Product.Name);
+                if (existingProduct is not null) 
+                {
+                    Instance.RemoveProduct(existingProduct);
+                }
+
                 Instance.AddProduct(newEvent.Product, newEvent.Quantity);
                 return OperationResult<Key>.CreateSuccess(newEvent.Id);
             }

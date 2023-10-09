@@ -15,5 +15,14 @@ namespace Order.Core.Order
 
         public abstract void AddProduct(IProduct product, int quantity);
         public abstract void AddPayment(IPayment payment);
+
+        public void RemoveProduct(IProduct product)
+        {
+            IProduct? existingProduct = Basket.FirstOrDefault(x => x.Name == product.Name);
+            if (existingProduct != null)
+            {
+                Basket.Remove(existingProduct);
+            }
+        }
     }
 }

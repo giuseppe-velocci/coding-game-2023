@@ -64,5 +64,24 @@ namespace Order.Core.Test
 
             Assert.Equal(payment, _sut.GetPayment());
         }
+
+        [Fact]
+        public void RemoveProduct_WhenExistsingProductIsRemovedToBasket_Success()
+        {
+            SampleProduct product = new();
+            _sut.AddProduct(product, 1);
+            _sut.RemoveProduct(product);
+
+            Assert.Empty(_sut.GetProducts());
+        }
+        
+        [Fact]
+        public void RemoveProduct_WhenNotExistsingProductIsRemovedToBasket_Success()
+        {
+            SampleProduct product = new();
+            _sut.RemoveProduct(product);
+
+            Assert.Empty(_sut.GetProducts());
+        }
     }
 }

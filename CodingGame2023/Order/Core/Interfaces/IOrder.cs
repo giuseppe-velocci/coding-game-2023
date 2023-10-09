@@ -6,6 +6,7 @@ namespace Order.Core.Interfaces
     {
         Key Id { get; }
         void AddProduct(IProduct product, int quantity);
+        void RemoveProduct(IProduct product);
         double GetTotalAmount();
         void AddPayment(IPayment payment);
         IEnumerable<IProduct> GetProducts();
