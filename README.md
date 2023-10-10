@@ -14,7 +14,7 @@ This document provides details about the endpoints for managing orders, adding p
 
 - **HTTP Method**: POST
 - **Endpoint**: `/order/add-product/{id}`
-- **Description**: Add a product (drink) to an existing order. Calling this endpoint multiple times for the same product will result in an override. It cannot remove added products
+- **Description**: Add a product (drink) to an existing order. Calling this endpoint multiple times for the same product will result in an override. It cannot remove added products. Important: products can be added as long as a payment has not been added.
 - **Query Parameters**: id: Order id, returned by `/order` endpoint
 - **HTTP Request Body**:
   ```json
@@ -28,7 +28,7 @@ This document provides details about the endpoints for managing orders, adding p
 
 - **HTTP Method**: POST
 - **Endpoint**: `/order/add-payment/{id}`
-- **Description**: Add a product (drink) to an existing order.
+- **Description**: Add a payment method to an existing order. Important: a payment can be added only if an order has at least one product. After a payment is set, no more products can be added to that order.
 - **Query Parameters**: id: Order id, returned by `/order` endpoint
 - **HTTP Request Body**:
   ```json

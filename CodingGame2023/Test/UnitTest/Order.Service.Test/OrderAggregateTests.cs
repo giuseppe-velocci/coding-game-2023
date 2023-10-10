@@ -128,9 +128,52 @@ namespace Order.Service.Test
             Assert.False(result.Success);
             _mockEventStore.Verify(store => store.StoreAsync(It.IsAny<IEvent>()), Times.Never);
         }
+        
+        [Fact]
+        public async Task Apply_WhenProductAddedToBasketAndOrderIsClosed_Failure()
+        {
+            // Arrange
+            var orderCreatedEvent = new OrderCreatedEvent();
+            Key id = orderCreatedEvent.Id;
+            var paymentAddedEvent = new PaymentAddedEvent(orderCreatedEvent.Id, new SamplePayment(id));
+            _mockEventStore.Setup(x => x.GetEventsAsync(It.IsAny<Key>())).ReturnsAsync(new IEvent[] { orderCreatedEvent, paymentAddedEvent });
+
+            var productAddedEvent = new ProductAddedToBasketEvent(
+                id,
+                new SampleProduct(),
+                2
+            );
+
+            // Act
+            var result = await _sut.Apply(productAddedEvent);
+            var instance = await _sut.GetInstance(id);
+
+            // Assert
+            Assert.False(result.Success);
+            _mockEventStore.Verify(store => store.StoreAsync(It.IsAny<IEvent>()), Times.Never);
+        }
 
         [Fact]
-        public async Task Apply_WhenPaymentAddedEventAndOrderExists_Success()
+        public async Task Apply_WhenPaymentAddedEventAndOrderHasProducts_Success()
+        {
+            // Arrange
+            var orderCreatedEvent = new OrderCreatedEvent();
+            var productAddedEvent = new ProductAddedToBasketEvent(orderCreatedEvent.Id, new SampleProduct(), 2);
+            _mockEventStore.Setup(x => x.GetEventsAsync(It.IsAny<Key>())).ReturnsAsync(new IEvent[] { orderCreatedEvent, productAddedEvent });
+            var paymentAddedEvent = new PaymentAddedEvent(orderCreatedEvent.Id, new SamplePayment(orderCreatedEvent.Id));
+
+            // Act
+            var result = await _sut.Apply(paymentAddedEvent);
+            var instance = await _sut.GetInstance(orderCreatedEvent.Id);
+
+            // Assert
+            Assert.True(result.Success);
+            Assert.Equal(paymentAddedEvent.Id, instance!.Id);
+            _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 2)), Times.Once);
+        }
+        
+        [Fact]
+        public async Task Apply_WhenPaymentAddedEventAndOrderHasNowProducts_Failure()
         {
             // Arrange
             var orderCreatedEvent = new OrderCreatedEvent();
@@ -142,9 +185,8 @@ namespace Order.Service.Test
             var instance = await _sut.GetInstance(orderCreatedEvent.Id);
 
             // Assert
-            Assert.True(result.Success);
-            Assert.Equal(paymentAddedEvent.Id, instance!.Id);
-            _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
+            Assert.False(result.Success);
+            _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 1)), Times.Never);
         }
 
         [Fact]

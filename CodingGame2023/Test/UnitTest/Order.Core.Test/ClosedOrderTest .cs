@@ -1,22 +1,23 @@
 using Core;
+using Order.Core.Order;
 using Test.Commons;
 
 namespace Order.Core.Test
 {
-    public class OrderTest
+    public class ClosedOrderTest
     {
         private static readonly Key _id = new();
-        private readonly Order.Order _sut = new(_id);
+        private static readonly Order.Order order = new(_id);
+        private readonly Order.ClosedOrder _sut = new(order);
 
         [Fact]
-        public void AddProduct_WhenValidProductIsAddedToBasket_Success()
+        public void AddProduct_WhenValidProductIsAddedToBasket_Failure()
         {
             int quantity = 1;
             SampleProduct product = new() { Quantity = quantity };
             _sut.AddProduct(product, quantity);
 
-            Assert.Equivalent(product, _sut.GetProducts().Single());
-            Assert.Equal(quantity, _sut.GetProducts().Single().Quantity);
+            Assert.Empty(_sut.GetProducts());
         }
 
         [Fact]
@@ -37,22 +38,35 @@ namespace Order.Core.Test
         [Fact]
         public void GetTotalCost_WhenBasketHasProducts_RetunsAmount()
         {
+            Order.Order orderWithProducts = new(_id);
             SampleProduct product = new();
             int qty = 3;
-            _sut.AddProduct(product, qty);
+            orderWithProducts.AddProduct(product, qty);
+            ClosedOrder sut = new(orderWithProducts);
+
             double expected = product.Price * qty;
 
-            var result = _sut.GetTotalAmount();
+            var result = sut.GetTotalAmount();
             Assert.Equal(expected, result);
         }
 
         [Fact]
-        public void AddPayment_WhenCalled_Failure()
+        public void AddPayment_WhenNoPaymentIsSet_Success()
         {
             var payment = new SamplePayment(new Key());
             _sut.AddPayment(payment);
 
-            Assert.Null(_sut.GetPayment());
+            Assert.Equal(payment, _sut.GetPayment());
+        }
+
+        [Fact]
+        public void AddPayment_WhenPaymentIsSet_OverridesAndSuccess()
+        {
+            _sut.AddPayment(new SamplePayment(new Key()));
+            var payment = new SamplePayment(new Key());
+            _sut.AddPayment(payment);
+
+            Assert.Equal(payment, _sut.GetPayment());
         }
 
         [Fact]

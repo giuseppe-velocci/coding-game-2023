@@ -20,7 +20,7 @@ namespace Order.Service
             _paymentStore = paymentStore;
         }
 
-        public Task<OperationResult<Core.Order.Order>> GetOrderAsync(Key id)
+        public Task<OperationResult<Core.Order.AbstractOrder>> GetOrderAsync(Key id)
         {
             return _orderStore.GetOrderAsync(id);
         }

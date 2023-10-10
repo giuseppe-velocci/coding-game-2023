@@ -5,11 +5,11 @@ namespace Order.Core.Interfaces
     public interface IOrder
     {
         Key Id { get; }
-        void AddProduct(IProduct product, int quantity);
-        void RemoveProduct(IProduct product);
-        double GetTotalAmount();
-        void AddPayment(IPayment payment);
-        IEnumerable<IProduct> GetProducts();
+        OperationResult<Key> AddPayment(IPayment payment);
+        OperationResult<Key> AddProduct(IProduct product, int quantity);
         IPayment? GetPayment();
+        IEnumerable<IProduct> GetProducts();
+        double GetTotalAmount();
+        void RemoveProduct(IProduct product);
     }
 }

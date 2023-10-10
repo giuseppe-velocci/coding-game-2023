@@ -4,6 +4,6 @@ namespace Order.Core.Interfaces
 {
     public interface IOrderStore
     {
-        Task<OperationResult<Order.Order>> GetOrderAsync(Key id);
+        Task<OperationResult<Order.AbstractOrder>> GetOrderAsync(Key id);
     }
 }

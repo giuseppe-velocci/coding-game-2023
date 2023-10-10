@@ -25,13 +25,13 @@ namespace Order.Api.Test
             Core.Order.Order order = new(orderId);
             _mockService
                 .Setup(x => x.GetOrderAsync(It.IsAny<Key>()))
-                .ReturnsAsync(OperationResult<Core.Order.Order>.CreateSuccess(order));
+                .ReturnsAsync(OperationResult<Core.Order.AbstractOrder>.CreateSuccess(order));
 
             // Act
             var result = await _sut.GetOrderAsync(orderId);
 
             // Assert
-            Assert.Equivalent(Results.Ok(OperationResult<Core.Order.Order>.CreateSuccess(order)), result);
+            Assert.Equivalent(Results.Ok(OperationResult<Core.Order.AbstractOrder>.CreateSuccess(order)), result);
         }
 
         [Fact]
@@ -42,13 +42,13 @@ namespace Order.Api.Test
             string message = "Bad request";
             _mockService
                 .Setup(x => x.GetOrderAsync(It.IsAny<Key>()))
-                .ReturnsAsync(OperationResult<Core.Order.Order>.CreateFailure(message));
+                .ReturnsAsync(OperationResult<Core.Order.AbstractOrder>.CreateFailure(message));
 
             // Act
             var result = await _sut.GetOrderAsync(orderId);
 
             // Assert
-            Assert.Equivalent(Results.BadRequest(OperationResult<Core.Order.Order>.CreateFailure(message)), result);
+            Assert.Equivalent(Results.BadRequest(OperationResult<Core.Order.AbstractOrder>.CreateFailure(message)), result);
         }
 
         [Fact]

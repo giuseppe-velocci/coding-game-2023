@@ -10,16 +10,21 @@ namespace Order.Core.Order
             Id = id;
         }
 
-        public override void AddPayment(IPayment payment)
+        public override OperationResult<Key> AddPayment(IPayment payment)
         {
-            Payment = payment;
+            return OperationResult<Key>.CreateFailure("Cannot add a payment for an active Order");
         }
 
-        public override void AddProduct(IProduct product, int quantity)
+        public override OperationResult<Key> AddProduct(IProduct product, int quantity)
         {
             if (product is not null)
             {
                 Basket.Add(product.UpdateQuantity(quantity));
+                return OperationResult<Key>.CreateSuccess(Id);
+            }
+            else
+            {
+                return OperationResult<Key>.CreateFailure("Invalid Product");
             }
         }
     }

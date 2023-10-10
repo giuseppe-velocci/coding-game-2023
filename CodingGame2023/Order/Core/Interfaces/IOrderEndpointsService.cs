@@ -9,7 +9,7 @@ namespace Order.Core.Interfaces
         Task<OperationResult<Key>> AddToBasketAsync(string order, ProductRequest product);
         Task<OperationResult<Key>> CreateOrderAsync();
         Task<IEnumerable<IProduct>> GetDrinksAsync();
-        Task<OperationResult<Order.Order>> GetOrderAsync(Key id);
+        Task<OperationResult<Order.AbstractOrder>> GetOrderAsync(Key id);
         Task<IEnumerable<string>> GetPaymentsAsync();
     }
 }

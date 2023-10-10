@@ -13,8 +13,8 @@ namespace Order.Core.Order
         public IPayment? GetPayment() => Payment;
         public double GetTotalAmount() => Basket.Select(x => x.Quantity * x.Price).Sum();
 
-        public abstract void AddProduct(IProduct product, int quantity);
-        public abstract void AddPayment(IPayment payment);
+        public abstract OperationResult<Key> AddProduct(IProduct product, int quantity);
+        public abstract OperationResult<Key> AddPayment(IPayment payment);
 
         public void RemoveProduct(IProduct product)
         {

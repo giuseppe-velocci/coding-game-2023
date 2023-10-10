@@ -1,5 +1,6 @@
 ﻿using Core;
 using Order.Core.Interfaces;
+using Order.Core.Order;
 using Order.Service.Events;
 
 namespace Order.Service.Aggregates
@@ -48,8 +49,7 @@ namespace Order.Service.Aggregates
                     Instance.RemoveProduct(existingProduct);
                 }
 
-                Instance.AddProduct(newEvent.Product, newEvent.Quantity);
-                return OperationResult<Key>.CreateSuccess(newEvent.Id);
+                return Instance.AddProduct(newEvent.Product, newEvent.Quantity);
             }
         }
 
@@ -59,11 +59,23 @@ namespace Order.Service.Aggregates
             {
                 return OperationResult<Key>.CreateFailure("Order does not exists");
             }
-
-            if (newEvent.Payment.IsAllowed(Instance.GetTotalAmount()))
+            else if (!Instance.GetProducts().Any())
             {
-                Instance.AddPayment(newEvent.Payment);
-                return OperationResult<Key>.CreateSuccess(newEvent.Id);
+                return OperationResult<Key>.CreateFailure("Cannot checkout an Order without products");
+            }
+            else if (newEvent.Payment.IsAllowed(Instance.GetTotalAmount()))
+            {
+                Instance = new ClosedOrder(Instance);
+                var addPaymentResult = Instance.AddPayment(newEvent.Payment);
+                if (addPaymentResult.Success)
+                {
+                    Instance = new ClosedOrder(Instance);
+                    return OperationResult<Key>.CreateSuccess(newEvent.Id);
+                }
+                else
+                {
+                    return addPaymentResult;
+                }
             }
             else
             {
