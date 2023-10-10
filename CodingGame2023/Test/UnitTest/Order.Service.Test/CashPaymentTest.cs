@@ -56,6 +56,6 @@ namespace Order.Service.Test
 
             //Assert
             Assert.Equal(PaymentType.Cash, result);
-        }   
+        }
     }
 }

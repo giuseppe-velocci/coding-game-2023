@@ -69,20 +69,20 @@ namespace Order.Service.Test
             //Assert
             Assert.False(result.Success);
         }
-        
+
         [Fact]
         public async Task Handle_WhenAddProductToBasketCommandAndProductIsNotFound_Failure()
         {
             //Arrange
             _mockProductStore.Setup(x => x.FindAsync(It.IsAny<string>())).ReturnsAsync(OperationResult<IProduct>.CreateFailure(""));
-            
+
             //Act
             var result = await _sut.HandleAsync(new AddProductToBasketCommand(new Key(), "prod", 0));
 
             //Assert
             Assert.False(result.Success);
         }
-        
+
         [Fact]
         public async Task Handle_WhenAddPaymentCommandAndAggregateApplyFails_Fails()
         {
@@ -96,7 +96,7 @@ namespace Order.Service.Test
             //Assert
             Assert.False(result.Success);
         }
-        
+
         [Fact]
         public async Task Handle_WhenAddPaymentCommandAndPaymentFound_Success()
         {
@@ -110,7 +110,7 @@ namespace Order.Service.Test
             //Assert
             Assert.True(result.Success);
         }
-        
+
         [Fact]
         public async Task Handle_WhenAddPaymentCommandAndPaymentIsNotFound_Failure()
         {

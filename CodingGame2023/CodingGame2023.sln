@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Commons", "Test\Test.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Core.Test", "Test\UnitTest\Order.Core.Test\Order.Core.Test.csproj", "{453FD4C6-3013-4162-9535-25D7825A9270}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.Api.Test", "Test\UnitTest\Order.Api.Test\Order.Api.Test\Order.Api.Test.csproj", "{94502406-D995-426C-ABB8-54A64AEAA7A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{453FD4C6-3013-4162-9535-25D7825A9270}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{453FD4C6-3013-4162-9535-25D7825A9270}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{453FD4C6-3013-4162-9535-25D7825A9270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94502406-D995-426C-ABB8-54A64AEAA7A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94502406-D995-426C-ABB8-54A64AEAA7A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94502406-D995-426C-ABB8-54A64AEAA7A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94502406-D995-426C-ABB8-54A64AEAA7A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{CC84A06B-C890-4515-AF8B-F328B482FBAA} = {3DF11503-98C7-4B08-9E0D-ECD69D8CB60E}
 		{DE9E2DA0-3921-4511-8384-C88DFAA4AEAB} = {3DF11503-98C7-4B08-9E0D-ECD69D8CB60E}
 		{453FD4C6-3013-4162-9535-25D7825A9270} = {3DF11503-98C7-4B08-9E0D-ECD69D8CB60E}
+		{94502406-D995-426C-ABB8-54A64AEAA7A3} = {3DF11503-98C7-4B08-9E0D-ECD69D8CB60E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BCF4CC34-B7AF-4CB2-B792-D3DBA2AC8141}

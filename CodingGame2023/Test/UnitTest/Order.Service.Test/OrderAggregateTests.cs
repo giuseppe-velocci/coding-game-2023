@@ -73,7 +73,7 @@ namespace Order.Service.Test
             Assert.Equal(2, instance!.GetProducts().Single().Quantity);
             _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 1)), Times.Once);
         }
-        
+
         [Fact]
         public async Task Apply_WhenProductAddedToBasketEventAndProductIsAlreadyThere_OverwritesQuantity()
         {
@@ -86,9 +86,9 @@ namespace Order.Service.Test
             );
             _mockEventStore
                 .Setup(x => x.GetEventsAsync(It.IsAny<Key>()))
-                .ReturnsAsync(new IEvent[] { 
-                    orderCreatedEvent, 
-                    firstProductAddedEvent 
+                .ReturnsAsync(new IEvent[] {
+                    orderCreatedEvent,
+                    firstProductAddedEvent
                 });
 
             var productAddedEvent = new ProductAddedToBasketEvent(
@@ -106,7 +106,7 @@ namespace Order.Service.Test
             Assert.Equal(2, instance!.GetProducts().Single().Quantity);
             _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 2)), Times.Once);
         }
-        
+
         [Fact]
         public async Task Apply_WhenProductAddedToBasketAndEventDoesNotExists_Failure()
         {

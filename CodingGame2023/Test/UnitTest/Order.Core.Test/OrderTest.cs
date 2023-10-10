@@ -74,7 +74,7 @@ namespace Order.Core.Test
 
             Assert.Empty(_sut.GetProducts());
         }
-        
+
         [Fact]
         public void RemoveProduct_WhenNotExistsingProductIsRemovedToBasket_Success()
         {

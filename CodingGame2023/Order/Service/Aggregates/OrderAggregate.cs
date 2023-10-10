@@ -43,7 +43,7 @@ namespace Order.Service.Aggregates
             else
             {
                 IProduct? existingProduct = Instance.GetProducts().FirstOrDefault(x => x.Name == newEvent.Product.Name);
-                if (existingProduct is not null) 
+                if (existingProduct is not null)
                 {
                     Instance.RemoveProduct(existingProduct);
                 }

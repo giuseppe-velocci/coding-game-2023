@@ -1,5 +1,4 @@
 using Order.Api;
-using Order.Core.Interfaces;
 using Order.Service.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Add business services
-builder.Services.AddOrderService();
+builder.Services
+    .AddOrderService()
+    .AddTransient<OrderApiServiceAdapter>();
 
 var app = builder.Build();
 
@@ -23,6 +24,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-EndpointsBinder.BindOrderEndpoints(app, () => app.Services.GetRequiredService<IOrderEndpointsService>());
+EndpointsBinder.BindOrderEndpoints(app, () => app.Services.GetRequiredService<OrderApiServiceAdapter>());
 
 app.Run();
