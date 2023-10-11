@@ -17,11 +17,11 @@ namespace Order.Api
             //POST
             app.MapPost("/order", async () => await getService().CreateOrderAsync());
 
-            app.MapPost("/order/add-payment/{id}", async (string id, PaymentRequest payment) =>
+            app.MapPost("/order/{id}/add-payment", async (string id, PaymentRequest payment) =>
                 await getService().AddPaymentAsync(id, payment));
 
-            app.MapPost("/order/add-product/{order}", async (string order, ProductRequest product) =>
-                await getService().AddToBasketAsync(order, product));
+            app.MapPost("/order/{id}/add-product", async (string id, ProductRequest product) =>
+                await getService().AddToBasketAsync(id, product));
         }
     }
 }

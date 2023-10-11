@@ -50,6 +50,22 @@ namespace Order.Api.Test
             // Assert
             Assert.Equivalent(Results.BadRequest(OperationResult<Core.Order.AbstractOrder>.CreateFailure(message)), result);
         }
+        
+        [Fact]
+        public async Task GetOrderAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            _mockService
+                .Setup(x => x.GetOrderAsync(It.IsAny<Key>()))
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.GetOrderAsync(orderId);
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
+        }
 
         [Fact]
         public async Task GetDrinksAsync_WhenRequestIsValid_ReturnsOkResult()
@@ -68,6 +84,22 @@ namespace Order.Api.Test
         }
 
         [Fact]
+        public async Task GetDrinksAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            _mockService
+                .Setup(x => x.GetDrinksAsync())
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.GetDrinksAsync();
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
+        }
+
+        [Fact]
         public async Task GetPaymentsAsync_WhenRequestIsValid_ReturnsOkResult()
         {
             // Arrange
@@ -82,6 +114,22 @@ namespace Order.Api.Test
 
             // Assert
             Assert.Equivalent(Results.Ok(payments), result);
+        }
+
+        [Fact]
+        public async Task GetPaymentsAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            _mockService
+                .Setup(x => x.GetPaymentsAsync())
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.GetPaymentsAsync();
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
         }
 
         [Fact]
@@ -117,6 +165,22 @@ namespace Order.Api.Test
         }
 
         [Fact]
+        public async Task CreateOrderAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            _mockService
+                .Setup(x => x.CreateOrderAsync())
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.CreateOrderAsync();
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
+        }
+
+        [Fact]
         public async Task AddPaymentAsync_WhenRequestIsValid_ReturnsCreatedResult()
         {
             // Arrange
@@ -146,6 +210,23 @@ namespace Order.Api.Test
 
             // Assert
             Assert.Equivalent(Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body")), result);
+        }
+
+        [Fact]
+        public async Task AddPaymentAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            PaymentRequest paymentRequest = new();
+            _mockService
+                .Setup(x => x.AddPaymentAsync(It.IsAny<string>(), It.IsAny<PaymentRequest>()))
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.AddPaymentAsync(orderId.Value, paymentRequest);
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
         }
 
         [Fact]
@@ -179,5 +260,23 @@ namespace Order.Api.Test
             // Assert
             Assert.Equivalent(Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body")), result);
         }
+
+        [Fact]
+        public async Task AddToBasketAsync_WhenRequestThrowsException_ReturnsInternalserverError()
+        {
+            // Arrange
+            Key orderId = new();
+            ProductRequest productRequest = new();
+            _mockService
+                .Setup(x => x.AddToBasketAsync(It.IsAny<string>(), It.IsAny<ProductRequest>()))
+                .ThrowsAsync(new Exception());
+
+            // Act
+            var result = await _sut.AddToBasketAsync(orderId.Value, productRequest);
+
+            // Assert
+            Assert.Equivalent(Results.StatusCode(StatusCodes.Status500InternalServerError), result);
+        }
+
     }
 }
