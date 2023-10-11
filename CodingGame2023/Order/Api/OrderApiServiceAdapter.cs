@@ -15,40 +15,88 @@ namespace Order.Api
 
         public async Task<IResult> GetOrderAsync(Key id)
         {
-            var result = await _service.GetOrderAsync(id);
-            return result.Success ? Results.Ok(result) : Results.BadRequest(result);
+            try
+            {
+                var result = await _service.GetOrderAsync(id);
+                return result.Success ? Results.Ok(result) : Results.BadRequest(result);
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
-        public async Task<IResult> GetDrinksAsync() => Results.Ok(await _service.GetDrinksAsync());
+        public async Task<IResult> GetDrinksAsync()
+        {
+            try
+            {
+                return Results.Ok(await _service.GetDrinksAsync());
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
 
-        public async Task<IResult> GetPaymentsAsync() => Results.Ok(await _service.GetPaymentsAsync());
+        public async Task<IResult> GetPaymentsAsync()
+        {
+            try
+            {
+                return Results.Ok(await _service.GetPaymentsAsync());
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
 
         public async Task<IResult> CreateOrderAsync()
         {
-            var result = await _service.CreateOrderAsync();
-            return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.Conflict(result);
+            try
+            {
+                var result = await _service.CreateOrderAsync();
+                return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.Conflict(result);
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         public async Task<IResult> AddPaymentAsync(string id, PaymentRequest payment)
         {
-            if (payment is null)
+            try
             {
-                return Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body"));
-            }
+                if (payment is null)
+                {
+                    return Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body"));
+                }
 
-            var result = await _service.AddPaymentAsync(id, payment);
-            return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
+                var result = await _service.AddPaymentAsync(id, payment);
+                return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
-        public async Task<IResult> AddToBasketAsync(string order, ProductRequest product)
+        public async Task<IResult> AddToBasketAsync(string id, ProductRequest product)
         {
-            if (product is null)
+            try
             {
-                return Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body"));
-            }
+                if (product is null)
+                {
+                    return Results.BadRequest(OperationResult<Key>.CreateFailure("Invalid body"));
+                }
 
-            var result = await _service.AddToBasketAsync(order, product);
-            return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
+                var result = await _service.AddToBasketAsync(id, product);
+                return result.Success ? Results.Created($"order/{result.Value.Value}", result) : Results.BadRequest(result);
+            }
+            catch (Exception _)
+            {
+                return Results.StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

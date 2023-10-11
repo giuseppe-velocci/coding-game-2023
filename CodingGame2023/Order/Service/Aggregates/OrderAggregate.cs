@@ -67,15 +67,10 @@ namespace Order.Service.Aggregates
             {
                 Instance = new ClosedOrder(Instance);
                 var addPaymentResult = Instance.AddPayment(newEvent.Payment);
-                if (addPaymentResult.Success)
-                {
-                    Instance = new ClosedOrder(Instance);
-                    return OperationResult<Key>.CreateSuccess(newEvent.Id);
-                }
-                else
-                {
-                    return addPaymentResult;
-                }
+
+                return addPaymentResult.Success ?
+                    OperationResult<Key>.CreateSuccess(newEvent.Id) :
+                    addPaymentResult;
             }
             else
             {
