@@ -27,26 +27,26 @@ namespace Infrastructure
             if (storeReadResult)
             {
                 return TryAppendValue(newEvent, aggregateKey, record);
-            }
-            else
-            {
+                }
+                else
+                {
                 return TryCreateValue(newEvent, aggregateKey);
+                }
             }
-        }
 
         private Task<OperationResult<None>> TryCreateValue(IEvent newEvent, Key aggregateKey)
-        {
-            if (newEvent.Version == 0)
             {
+                if (newEvent.Version == 0)
+                {
                 return _store.TryAdd(aggregateKey, new List<IEvent> { newEvent }) ?
                     Task.FromResult(OperationResult<None>.CreateSuccess()) :
                     Task.FromResult(OperationResult<None>.CreateFailure($"Cannot store a new aggregate for of {_aggregateName} at {aggregateKey} because it is already stored"));
-            }
-            else
-            {
+                    }
+                    else
+                    {
                 return Task.FromResult(OperationResult<None>.CreateFailure($"Version number for a new event of {_aggregateName} at {aggregateKey} must be exactly 1"));
             }
-        }
+                    }
 
         private Task<OperationResult<None>> TryAppendValue(IEvent newEvent, Key aggregateKey, List<IEvent> record)
         {
@@ -54,9 +54,9 @@ namespace Infrastructure
             {
                 record.Add(newEvent);
                 return Task.FromResult(OperationResult<None>.CreateSuccess());
-            }
-            else
-            {
+                }
+                else
+                {
                 return Task.FromResult(OperationResult<None>.CreateFailure($"Unexpected version number on update of {_aggregateName} at {aggregateKey}"));
             }
         }
