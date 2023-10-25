@@ -50,7 +50,7 @@ namespace Order.Api.Test
             // Assert
             Assert.Equivalent(Results.BadRequest(OperationResult<Core.Order.AbstractOrder>.CreateFailure(message)), result);
         }
-        
+
         [Fact]
         public async Task GetOrderAsync_WhenRequestThrowsException_ReturnsInternalserverError()
         {

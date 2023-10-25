@@ -128,7 +128,7 @@ namespace Order.Service.Test
             Assert.False(result.Success);
             _mockEventStore.Verify(store => store.StoreAsync(It.IsAny<IEvent>()), Times.Never);
         }
-        
+
         [Fact]
         public async Task Apply_WhenProductAddedToBasketAndOrderIsClosed_Failure()
         {
@@ -171,7 +171,7 @@ namespace Order.Service.Test
             Assert.Equal(paymentAddedEvent.Id, instance!.Id);
             _mockEventStore.Verify(store => store.StoreAsync(It.Is<IEvent>(x => x.Version == 2)), Times.Once);
         }
-        
+
         [Fact]
         public async Task Apply_WhenPaymentAddedEventAndOrderHasNowProducts_Failure()
         {

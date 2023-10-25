@@ -49,7 +49,6 @@ namespace Order.Core.Test
             //Arrange
             SampleProduct product = new();
             int qty = 3;
-            _sut.AddProduct(product, qty);
             double expected = product.Price * qty;
 
             //Act
